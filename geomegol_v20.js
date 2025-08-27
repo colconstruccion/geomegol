@@ -120,7 +120,6 @@ function moverBalon(){
         if (near_x <= 5 && near_y <=5){
           console.log("esta cerca de en x del 2do equipo "+coor_x+" esta distancia "+near_x);
           console.log("esta cerca en y de "+coor_y+" esta distancia "+near_y);
-          resetCoor();
           mensaje.innerHTML = "GOL!!! GOL DEL VISITANTE!"
           marcador[1]++;
           marcador2.value = marcador[1];
@@ -144,7 +143,6 @@ function moverBalon(){
     //primero reviso si es gol
     if (Math.abs(gol_delta_y) <= 25 && Math.abs(gol_delta_x) <= 10){
           mensaje.innerHTML = "GOL!!! GOL DEL LOCAL!";
-          resetCoor();
           balon_x.value = "";
           balon_y.value = "";
           marcador[0]++;
@@ -248,6 +246,8 @@ function showAuxButton() {
     drawGoalArea('left');
     drawGoalArea('right');
     drawCenterLineAndCircle();
+    //resetear coordenadas
+    resetCoor();
     reset.remove();
   });
 }
