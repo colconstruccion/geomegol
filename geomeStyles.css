@@ -21,7 +21,7 @@
   --shadow-2: 0 2px 6px rgba(0,0,0,0.10);
   --radius-card: 12px;
   --radius-inp: 6px;
-  --font: 'Comic Sans MS', cursive, sans-serif;
+  --font: 'Comic Sans MS', Arial, "Times New Roman";
 }
 
 /* Layout: canvas left, players right */
@@ -347,3 +347,31 @@ h1::after{
 }
 .aux-btn:hover{ transform: translateY(-1px); }
 .aux-btn:active{ filter: brightness(0.95); }
+
+/* Portrait phones: put players below the canvas */
+@media (orientation: portrait) and (max-width: 900px){
+  main{
+    flex-direction: column;      /* stack vertically */
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  /* Ensure canvas/court stays on top */
+  .court{ order: 1; }
+
+  /* Players section below the court */
+  .players{
+    order: 2;
+    width: 100%;
+    margin-top: 4px;
+    justify-content: center;
+    flex-wrap: wrap;             /* let Team 1 / Team 2 wrap if narrow */
+  }
+
+  /* Make each team block breathe a bit on portrait */
+  .players .team{
+    width: 45%;
+    max-width: 240px;
+    min-width: 160px;
+  }
+}
