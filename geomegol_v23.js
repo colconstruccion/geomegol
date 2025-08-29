@@ -190,7 +190,7 @@ function moverBalon(){
     let gol_delta_x = gol_x - pecosa_x;
     let gol_delta_y = gol_y - pecosa_y;
     //primero reviso si es gol
-    if (Math.abs(gol_delta_y) <= 25 && Math.abs(gol_delta_x) < 10){
+    if (Math.abs(gol_delta_y) <= 25 && Math.abs(gol_delta_x) <= 10){
           mensaje.innerHTML = "GOL!!! GOL DEL LOCAL!";
           balon_x.value = "";
           balon_y.value = "";
@@ -202,7 +202,7 @@ function moverBalon(){
           balon_y.readOnly = false;
           balon_x.readOnly = false;
           showAuxButton();
-    }else if(Math.abs(delta_y) >= canvas.height || Math.abs(delta_x) >= canvas.width){
+    }else if(Math.abs(delta_y) > canvas.height || Math.abs(delta_x) > canvas.width){
         mensaje.innerHTML = "distancia entre el balon y el jugador en y es "+delta_y+"<br>";
         mensaje.innerHTML += "distancia entre el balon y el jugador en x es "+delta_x+"<br>";
     }else if (Math.abs(delta_x) >= 5 && Math.abs(delta_y) >= 5){
