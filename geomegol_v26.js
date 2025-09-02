@@ -55,6 +55,7 @@ const out = document.getElementById('ballSlope');   // <output id="ballSlope">â€
 const dyEl = document.getElementById('deltaY');
 const dxEl = document.getElementById('deltaX');
 const btn  = document.getElementById('moverBtn');
+const line = document.getElementById('lineEquation');
 
 //Coger los valores de las tablas
 const players = document.querySelectorAll('.players input');
@@ -146,8 +147,8 @@ function dibujarLocales(){
 function iniciarVisitantes(){
   for(let i=22;i<players.length;i++){
     if(i % 2 !== 0){
-          let coor_y = Math.random()*(canvas.height-5) + 5;
-          let coor_x = Math.random()*(canvas.width-10) + 10;
+          let coor_y = Math.random()*(canvas.height-10) + 5;
+          let coor_x = Math.random()*(canvas.width-15) + 10;
           let k = i - 1;
             ctx.beginPath();
             ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
@@ -220,6 +221,8 @@ function moverBalon(){
           loc_y = 1;
           balon_y.readOnly = false;
           balon_x.readOnly = false;
+          balon_x.value = "";
+          balon_y.value = "";
           return;
         }
       }
@@ -362,6 +365,9 @@ function updateSlope() {
     const m = dy / dx;                  // canvas note: y+ is down
     out.textContent = m.toFixed(2);
     // If you want mathematical slope with y up, use: (-dy / dx).toFixed(2)
+    const b = balon_y.value - ((dy / dx) * balon_x.value);
+    let equation = 'y = '+m.toFixed(2)+'x + '+b.toFixed(2);
+    line.textContent = equation;
   }
 }
 
