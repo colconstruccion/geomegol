@@ -1,4 +1,4 @@
-function saquedeBanda(){
+function saquedeMeta(){
     //Coger los valores de la pendiente
     Idy = parseFloat(dyEl.value) || 0;
     Idx = parseFloat(dxEl.value) || 0;
@@ -14,7 +14,7 @@ function saquedeBanda(){
     //dibujar balon
     // se incremente la posicion horizontal y vertical
     pecosa_x -= Idx; 
-    pecosa_y += Idy;
+    pecosa_y += 0;
     //se hace la bola moviendose
     ctx.beginPath();
     ctx.arc(pecosa_x,pecosa_y,5,0,2*Math.PI);
@@ -58,8 +58,8 @@ function saquedeBanda(){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;
         balon_y.value = canvas.height/2;
-         //saque de Meta
-        saquedeMeta();
+         //Saque de meta
+        requestAnimationFrame(saquedeMeta);
     }else if(pecosa_y > canvas.height){
         mensaje.innerHTML = "Saque de Banda";
         balon_x.value = pecosa_x;
@@ -71,6 +71,6 @@ function saquedeBanda(){
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         console.log("Distancia al gol en x "+gol_delta_x+" Distancia al gol en y "+gol_delta_y);
         tablero.style.backgroundColor = "";
-        requestAnimationFrame(saquedeBanda);
+        saquedeBanda();
     }
 }

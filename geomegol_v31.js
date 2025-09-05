@@ -1,6 +1,7 @@
 //Geomegol
 /*
 funcion moverBalon() mueve el balon del jugador local a la porteria del visitante
+funcion saquedeBanda() se activa dentro de moverBalon()
 function patearBalon() mueve la pelota del equipo visitante a la porteria del local
 function iniciarVisitantes() inicia las posiciones de los visitantes y las ubica en la tabla de visitantes
 function dibujarVisitantes() coge las posiciones de la tabla de visitantes y dibuja los jugadores
@@ -30,9 +31,10 @@ const marcador2 = document.getElementById("scoreTeam2");
 const tablero = document.getElementById("mensaje");
 //instruciones
 const instructionsCard = document.querySelector('.instructions-card');
-
 // instructionsCard.classList.remove('is-hidden'); // show
 // instructionsCard.classList.toggle('is-hidden'); // toggle
+//Boton para mover la pelota
+const moverBtn = document.getElementById('moverBtn');
 
 //Coordenadas Previas
 let prevCoor_x = 0;
@@ -70,18 +72,13 @@ function resetCoor(){
   }
 }
 
-function dibujarJugador(coor_x,coor_y,k,i){
-  let visi_x = canvas.width - coor_x;
-  let visi_y = canvas.height - coor_y;
+function dibujarPelotaSaque(temp_x,temp_y){
   ctx.beginPath();
-  ctx.arc(visi_x,visi_y,5,0,2*Math.PI);
+  ctx.arc(temp_x,temp_y,5,0,2*Math.PI);
   ctx.strokeSyle = 'black';
   ctx.stroke();
-  ctx.fillStyle = 'green';
+  ctx.fillStyle = 'black';
   ctx.fill();
-  //actualizar el valor del input de los visitantes
-  players[k+22].value = visi_x;
-  players[i+22].value = coor_y;
 }
 
 // Dibujar los jugadores
@@ -243,14 +240,13 @@ function moverBalon(){
           balon_y.readOnly = false;
           balon_x.readOnly = false;
           //limpiar el canvas
-          ctx.clearRect(0,0,canvas.width,canvas.height);
+          /* ctx.clearRect(0,0,canvas.width,canvas.height);
           //Redo all players
           dibujarLocales();
           //Hacer la cancha
           drawGoalArea('left');
           drawGoalArea('right');
-          drawCenterLineAndCircle();
-          setTimeout(iniciarVisitantes,200);
+          drawCenterLineAndCircle(); */
           return;
         }
       }
@@ -274,10 +270,14 @@ function moverBalon(){
           loc_y = 1;
           balon_y.readOnly = false;
           balon_x.readOnly = false;
+          moverBtn.classList.add('is-hidden');
           showAuxButton();
-    }else if(Math.abs(delta_y) > canvas.height || Math.abs(delta_x) > canvas.width){
-        mensaje.innerHTML = "distancia entre el balon y el jugador en y es "+delta_y+"<br>";
-        mensaje.innerHTML += "distancia entre el balon y el jugador en x es "+delta_x+"<br>";
+    }else if(pecosa_y > canvas.height){
+        mensaje.innerHTML = "Saque de Banda";
+        balon_x.value = pecosa_x;
+        balon_y.value = canvas.height - pecosa_y;
+        balon_y.readOnly = false;
+        balon_x.readOnly = false;
     }else if(pecosa_y <= 0 || pecosa_y >= canvas.height){
         //balon_x.value = pecosa_x;
         //balon_y.value = canvas.height - pecosa_y;
@@ -288,12 +288,8 @@ function moverBalon(){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;
         balon_y.value = canvas.height/2;
-         //se hace la bola moviendose
-        ctx.beginPath();
-        ctx.arc(575,canvas.height/2,5,0,2*Math.PI);
-        ctx.stroke();
-        ctx.fillStyle = 'black';
-        ctx.fill();
+         //saque de meta
+         saquedeMeta();    
     }else if (Math.abs(delta_x) >= 5 && Math.abs(delta_y) >= 5){
         mensaje.innerHTML = 'la distancia entre el balon y el jugador en x es '+delta_x+'<br>';
         mensaje.innerHTML += "distancia entre el balon y el jugador en y es "+delta_y+"<br>";
@@ -351,13 +347,13 @@ function patearBalon(){
     Idx = parseFloat(dxEl.value) || 0;
     //limpiar el canvas
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    //Redo all players
-    dibujarLocales();
-    dibujarVisitantes();
     //Hacer la cancha
     drawGoalArea('left');
     drawGoalArea('right');
     drawCenterLineAndCircle();
+    //Redo all players
+    dibujarLocales();
+    dibujarVisitantes();
     //dibujar balon
     // se incremente la posicion horizontal y vertical
     pecosa_x -= Idx; 
@@ -382,20 +378,31 @@ function patearBalon(){
           loc_y = 1;
           balon_y.readOnly = false;
           balon_x.readOnly = false;
+          moverBtn.classList.add('is-hidden');
           showAuxButton();
     }else if(pecosa_y <= 0 || pecosa_y >= canvas.height){
         balon_x.value = pecosa_x;
         balon_y.value = canvas.height - pecosa_y;
         console.log("se salio en las coordenadas x"+pecosa_x+" y la coordenada y "+pecosa_y);
+        //no llamos saque de banda porque aqui la saca el equipo visitantes
+
     }else if(pecosa_x <= 0){
         mensaje.innerHTML = "Saque de meta";
-        balon_x.value = "";
-        balon_y.value = "";
+        balon_x.value = 15;
+        balon_y.value = canvas.height/2;
         loc_x = 0;
         loc_y = 1;
         balon_y.readOnly = false;
         balon_x.readOnly = false;
-        showAuxButton();
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        //Redo all players
+        dibujarLocales();
+        iniciarVisitantes();
+        //Hacer la cancha
+        drawGoalArea('left');
+        drawGoalArea('right');
+        drawCenterLineAndCircle();
+        dibujarPelotaSaque(15,100);
     }else{
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         console.log("Distancia al gol en x "+gol_delta_x+" Distancia al gol en y "+gol_delta_y);
@@ -463,5 +470,6 @@ function showAuxButton() {
     //resetear coordenadas
     resetCoor();
     reset.remove();
+    moverBtn.classList.remove('is-hidden');
   });
 }
