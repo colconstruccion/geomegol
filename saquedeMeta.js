@@ -4,6 +4,7 @@ function saquedeMeta(){
     Idx = parseFloat(dxEl.value) || 0;
     //limpiar el canvas
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    
     //Redo all players
     dibujarLocales();
     dibujarVisitantes();
@@ -11,7 +12,14 @@ function saquedeMeta(){
     drawGoalArea('left');
     drawGoalArea('right');
     drawCenterLineAndCircle();
-    //dibujar balon
+    //dibujar arqueros
+    dibujarArqueros();
+    //recuperar balon por el equipo local
+    balonLocal = recuperarBalonLocal(pecosa_x,pecosa_y);
+    if (balonLocal == true){
+      mensaje.innerHTML = fraseAleatoria();
+      return;
+    }
     // se incremente la posicion horizontal y vertical
     pecosa_x -= Idx; 
     pecosa_y += 0;
@@ -53,7 +61,7 @@ function saquedeMeta(){
         drawGoalArea('left');
         drawGoalArea('right');
         drawCenterLineAndCircle();
-        dibujarPelotaSaque(15,100);
+        dibujarPelotaSaque(25,100);
     }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;

@@ -68,7 +68,11 @@ function drawGoalArea(side, {
     ctx.restore();
   }
 
+
 // Example: draw on both ends
 drawGoalArea('left');
 drawGoalArea('right');
 drawCenterLineAndCircle();
+// Iniciar juego from geomegol.js
+iniciarJuego();
+

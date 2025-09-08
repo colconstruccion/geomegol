@@ -11,7 +11,12 @@ function saquedeBanda(){
     drawGoalArea('left');
     drawGoalArea('right');
     drawCenterLineAndCircle();
-    //dibujar balon
+    //recuperar el balon por el equipo local
+    balonLocal = recuperarBalonLocal(pecosa_x,pecosa_y);
+    if (balonLocal == true){
+      mensaje.innerHTML = fraseAleatoria();
+      return;
+    }
     // se incremente la posicion horizontal y vertical
     pecosa_x -= Idx; 
     pecosa_y += Idy;
@@ -53,7 +58,7 @@ function saquedeBanda(){
         drawGoalArea('left');
         drawGoalArea('right');
         drawCenterLineAndCircle();
-        dibujarPelotaSaque(15,100);
+        dibujarPelotaSaque(25,100);
     }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;
