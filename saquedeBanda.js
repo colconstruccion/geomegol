@@ -17,15 +17,12 @@ function saquedeBanda(){
       mensaje.innerHTML = fraseAleatoria();
       return;
     }
-    // se incremente la posicion horizontal y vertical
-    pecosa_x -= Idx; 
-    pecosa_y += Idy;
     //se hace la bola moviendose
     ctx.beginPath();
     ctx.arc(pecosa_x,pecosa_y,5,0,2*Math.PI);
     ctx.stroke();
     ctx.fillStyle = 'black';
-    ctx.fill();
+    ctx.fill(); 
     // Distancia al gol
     gol_delta_x = 10 - pecosa_x;
     gol_delta_y = 100 - pecosa_y;
@@ -36,8 +33,8 @@ function saquedeBanda(){
           marcador[1]++;
           marcador2.value = marcador[1];
           tablero.style.backgroundColor = "BLUE";
-          loc_x = 0;
-          loc_y = 1;
+          loc_x = 20;
+          loc_y = 21;
           balon_y.readOnly = false;
           balon_x.readOnly = false;
           showAuxButton();
@@ -46,8 +43,8 @@ function saquedeBanda(){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 15;
         balon_y.value = canvas.height/2;
-        loc_x = 0;
-        loc_y = 1;
+        loc_x = 20;
+        loc_y = 21;
         balon_y.readOnly = false;
         balon_x.readOnly = false;
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -65,17 +62,36 @@ function saquedeBanda(){
         balon_y.value = canvas.height/2;
          //saque de Meta
         saquedeMeta();
-    }else if(pecosa_y > canvas.height){
-        mensaje.innerHTML = "Saque de Banda";
+    }else if(pecosa_y >= canvas.height){
+        mensaje.innerHTML = "Saque de Banda! En la Juega!!!";
         balon_x.value = pecosa_x;
         balon_y.value = canvas.height - pecosa_y;
         balon_y.readOnly = false;
         balon_x.readOnly = false;
-    }
-    else{
+        // se incremente la posicion horizontal y vertical
+        pecosa_x -= Idx; 
+        pecosa_y -= Idy;
+        saquedeBanda();
+    }else if(pecosa_y < 0){
+        mensaje.innerHTML = "Saque de Banda Lateral"
+        balon_x.value = pecosa_x;
+        balon_y.value = canvas.height - pecosa_y;
+        balon_y.readOnly = false;
+        balon_x.readOnly = false;
+        // se incremente la posicion horizontal y vertical
+        pecosa_x -= Idx; 
+        pecosa_y += Idy;
+        saquedeBanda()
+    }else{
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
-        console.log("Distancia al gol en x "+gol_delta_x+" Distancia al gol en y "+gol_delta_y);
         tablero.style.backgroundColor = "";
+        // se incremente la posicion horizontal y vertical
+        balon_x.value = pecosa_x;
+        balon_y.value = canvas.height - pecosa_y;
+        balon_y.readOnly = false;
+        balon_x.readOnly = false;
+        pecosa_x -= Idx; 
+        pecosa_y += Idy;
         requestAnimationFrame(saquedeBanda);
     }
 }

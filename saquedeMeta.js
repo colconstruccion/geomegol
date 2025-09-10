@@ -39,18 +39,18 @@ function saquedeMeta(){
           marcador[1]++;
           marcador2.value = marcador[1];
           tablero.style.backgroundColor = "BLUE";
-          loc_x = 0;
-          loc_y = 1;
+          loc_x = 20;
+          loc_y = 21;
           balon_y.readOnly = false;
           balon_x.readOnly = false;
           showAuxButton();
           moverBtn.classList.add('is-hidden');
     }else if(pecosa_x <= 0){
         mensaje.innerHTML = "Saque de meta";
-        balon_x.value = 15;
+        balon_x.value = 25;
         balon_y.value = canvas.height/2;
-        loc_x = 0;
-        loc_y = 1;
+        loc_x = 20;
+        loc_y = 21;
         balon_y.readOnly = false;
         balon_x.readOnly = false;
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -79,6 +79,6 @@ function saquedeMeta(){
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         console.log("Distancia al gol en x "+gol_delta_x+" Distancia al gol en y "+gol_delta_y);
         tablero.style.backgroundColor = "";
-        saquedeBanda();
+        requestAnimationFrame(saquedeMeta);
     }
 }
