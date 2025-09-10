@@ -304,16 +304,12 @@ function moverBalon(){
           balon_x.readOnly = false;
           moverBtn.classList.add('is-hidden');
           showAuxButton();
-    }else if(pecosa_y <= 0 || Math.abs(pecosa_y) >= canvas.height){
-        balon_x.value = pecosa_x;
-        balon_y.value = canvas.height - pecosa_y;
-        balon_y.readOnly = false;
-        balon_x.readOnly = false;
+    }else if(pecosa_y <= 0 || pecosa_y >= canvas.height){
         tablero.style.backgroundColor = "";
-        mensaje.innerHTML = "Saque de banda del equipo visitante";
+        mensaje.innerHTML = (pecosa_y <= 0) ? "Saque de banda del equipo visitante" : "Saque Lateral de los visitantes";
         saquedeBanda();
-    }else if(pecosa_x >= canvas.width){
-        mensaje.innerHTML = "Saque de meta del local";
+    }else if(0 > pecosa_x || pecosa_x >= canvas.width){
+        mensaje.innerHTML = "Saque de meta del visitante";
          //saque de meta
          saquedeMeta();    
     }else if ( 0 < pecosa_x < canvas.width){
@@ -321,7 +317,7 @@ function moverBalon(){
         mensaje.innerHTML += "la posicion del balon en y es "+pecosa_y+"<br>";
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         console.log("delta x "+delta_x+" delta y "+delta_y);
-        console.log("Distancia al gol en x "+gol_delta_x+" Distancia al gol en y "+gol_delta_y);
+        console.log("el balon esta en x entre 0 "+pecosa_x+" y "+canvas.width);
         tablero.style.backgroundColor = "";
         requestAnimationFrame(moverBalon);
     }else{
@@ -434,10 +430,9 @@ function patearBalon(){
           drawCenterLineAndCircle();
           dibujarPelotaSaque(pecosa_x,pecosa_y);
           requestAnimationFrame(patearBalon);
-    }
-    else{
+    }else{
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
-        console.log("Distancia al gol en x "+gol_delta_x+" Distancia al gol en y "+gol_delta_y);
+        mensaje.innerText = "posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y;
         tablero.style.backgroundColor = "";
         requestAnimationFrame(patearBalon);
     }
@@ -474,9 +469,6 @@ function paseLocal(pecosa_x,pecosa_y){
       coor_x = players[k].value;
       let j = k+1;
       if(loc_x == k && loc_y == j){
-        console.log(loc_x);
-        console.log(loc_y);
-      }else if(loc_x == k && loc_y == j){
         console.log("esta en la posicion del arquero");
         console.log("j is"+j+"and k is"+k);
       }else if (coor_x !=0){

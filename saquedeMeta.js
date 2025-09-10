@@ -68,8 +68,8 @@ function saquedeMeta(){
         balon_y.value = canvas.height/2;
          //Saque de meta
         requestAnimationFrame(saquedeMeta);
-    }else if(pecosa_y > canvas.height){
-        mensaje.innerHTML = "Saque de Banda";
+    }else if(canvas.height < pecosa_y < 0){
+        mensaje.innerHTML = "Saque de Banda, con la pelota detras de la cabeza, a la bombonera!!!";
         balon_x.value = pecosa_x;
         balon_y.value = canvas.height - pecosa_y;
         balon_y.readOnly = false;
@@ -77,7 +77,7 @@ function saquedeMeta(){
     }
     else{
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
-        console.log("Distancia al gol en x "+gol_delta_x+" Distancia al gol en y "+gol_delta_y);
+        mensaje.innerText = "posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y;
         tablero.style.backgroundColor = "";
         requestAnimationFrame(saquedeMeta);
     }
