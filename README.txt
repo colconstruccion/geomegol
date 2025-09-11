@@ -2,12 +2,15 @@ geomegol_v.js
 56 function iniciarJuego() dibuja balon en la mitad del campo y los dos arqueros
 69 funcion dibujarArqueros()
 90 funcion dibujarBalon()
+110 se dibujan los jugadores locales con una for loop que escucha por un cambio en la tabla de jugadores locales
 175 function iniciarVisitantes() inicia las posiciones de los visitantes y las ubica en la tabla de visitantes
+178 funcion revisarPosicion revisa que el jugador local que se haga no tenga las coordenadas cercanas a un jugador visitante
 218 function dibujarVisitantes() coge las posiciones de la tabla de visitantes y dibuja los jugadores
-335 Se mueve la pelota con un addEventListener ->moverBalon()
+335 Se mueve la pelota con un addEventListener -> moverBalon()
 237 funcion moverBalon() mueve el balon del jugador local a la porteria del visitante
     252 paseLocal() revisa si la pelota pasa cerca de un jugador local
-    279 patearBalon() mueve la pelota por un jugador visitante
+    484 recuperarBalonVisitante() revisa si esta cerca de un balon visitante para llamar la funcion patearBalon()
+        496 patearBalon() mueve la pelota por un jugador visitante
     314 saquedeBanda() se llama si pecosa_y es mayor o menor que canvas.height
     318 saquedeMeta() se llama si pecosa_x es mayor o igual a canvas.width
     326 requestAnimationFrame(moverBalon) se vuelve a llamar si pecoas_x esta entre 0 y canvas.width
