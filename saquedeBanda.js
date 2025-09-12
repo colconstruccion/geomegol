@@ -35,7 +35,7 @@ function saquedeBanda(){
           balon_y.value = "";
           marcador[1]++;
           marcador2.value = marcador[1];
-          tablero.style.backgroundColor = "BLUE";
+          mensaje.style.backgroundColor = "BLUE";
           loc_x = 20;
           loc_y = 21;
           balon_y.readOnly = false;
@@ -64,7 +64,7 @@ function saquedeBanda(){
         saquedeBanda()
     }else if(0 < pecosa_y < canvas.height){
         mensaje.innerText = "posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y;
-        tablero.style.backgroundColor = "";
+        mensaje.style.backgroundColor = "";
         // se incremente la posicion horizontal y vertical
         balon_x.value = pecosa_x;
         balon_y.value = canvas.height - pecosa_y;
@@ -129,7 +129,7 @@ function saquedeBandaAbajo(){
           balon_y.value = "";
           marcador[1]++;
           marcador2.value = marcador[1];
-          tablero.style.backgroundColor = "BLUE";
+          mensaje.style.backgroundColor = "BLUE";
           loc_x = 20;
           loc_y = 21;
           balon_y.readOnly = false;
@@ -175,7 +175,7 @@ function saquedeBandaAbajo(){
     }else if(pecosa_y < canvas.height){
         mensaje.innerHTML += "Mucha atencion a ese pase <br>";
         mensaje.innerHTML = "coordenada del balon en x "+pecosa_x+" <br> coordenada del balon en y "+pecosa_y;
-        tablero.style.backgroundColor = "";
+        mensaje.style.backgroundColor = "";
         // se incremente la posicion horizontal y vertical
         balon_x.value = pecosa_x;
         balon_y.value = canvas.height - pecosa_y;

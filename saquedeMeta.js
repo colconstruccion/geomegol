@@ -38,7 +38,7 @@ function saquedeMeta(){
           balon_y.value = "";
           marcador[1]++;
           marcador2.value = marcador[1];
-          tablero.style.backgroundColor = "BLUE";
+          mensaje.style.backgroundColor = "BLUE";
           loc_x = 20;
           loc_y = 21;
           balon_y.readOnly = false;
@@ -78,7 +78,7 @@ function saquedeMeta(){
     else{
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         mensaje.innerText = "posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y;
-        tablero.style.backgroundColor = "";
+        mensaje.style.backgroundColor = "";
         requestAnimationFrame(saquedeMeta);
     }
 }
