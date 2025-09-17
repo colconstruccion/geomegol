@@ -54,14 +54,14 @@ function saquedeMeta(){
         balon_y.readOnly = false;
         balon_x.readOnly = false;
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        //Redo all players
-        dibujarLocales();
-        iniciarVisitantes();
         //Hacer la cancha
         drawGoalArea('left');
         drawGoalArea('right');
         drawCenterLineAndCircle();
         dibujarPelotaSaque(25,100);
+        //Redo all players
+        dibujarLocales();
+        ubicarVisitantes(Math.floor(Math.random()*formations.length));
     }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;
