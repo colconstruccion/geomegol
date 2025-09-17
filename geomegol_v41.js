@@ -215,24 +215,56 @@ function dibujarLocales(){
 
 //dibujar los jugadores visitantes la primera vez
 function iniciarVisitantes(){
-  let n = 0;
-  for(let i=22;i<players.length;i+=2){
-        
-    let coor_x = playersData.visitantes[n].x;
-    let coor_y = playersData.visitantes[n].y;
-          // Asignar valores a las casillas
-          players[i].value = coor_x;
-          players[i+1].value = coor_y;
+  for(let i=22;i<players.length-2;i++){
+    let min_y = (i<30) ? 25 : 10;
+    let min_x = 0;
+    let fieldWidth;
+    if (i<30){
+      fieldWidth =  canvas.width;
+      min_x = 450
+    }else if(i<38){
+        min_x = 300;
+        fieldWidth = canvas.width - 150;
+    }else{
+        min_x = 150;
+        fieldWidth = canvas.width - 300;
+    }
+
+    let fieldHeight = (i<30) ? canvas.height -25 : canvas.height;
+    if(i == 43){
+      //hacer el portero del equipo visitante
+      ctx.beginPath();
+      ctx.arc(585,canvas.height/2,5,0,2*Math.PI);
+      //ctx.strokStyle = "black";
+      ctx.stroke();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      players[42].value = 575;
+      players[43].value = canvas.height/2;
+    }else if(i % 2 !== 0){
+          console.log('cuando i es '+i+' min_x es ' +min_x);
+          console.log(min_y);
+          let coor_y = Math.round(Math.random()*(fieldHeight-min_y) + min_y) ;
+          let coor_x = Math.round(Math.random()*(fieldWidth-min_x) + min_x);
           let tempCoor_y = canvas.height-coor_y;
-    
+          //revisar posiciones de los visitantes
+          let ocupada = revisarPosicion(coor_x,coor_y);
+          if(ocupada == true){
+            //undo the upcoming i++
+            i--;
+            continue;
+          }
+          let k = i - 1;
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
           ctx.fillStyle = 'green';
           ctx.fill();
-          //subir posicion del jugador
-          n++;
+        //actualizar el valor del input de los visitantes
+         players[k].value = coor_x.toFixed(2);
+         players[i].value = coor_y.toFixed(2);
       }
+  }
 }
 
 // ubicar los jugadores visitantes
