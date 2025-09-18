@@ -3,6 +3,10 @@
     <head>
         <title>Geomegol</title>
         <link rel="stylesheet" href="geomeStyles.css">
+
+        <style>
+            #upLevel { display: none; }
+        </style>
     </head>
 
     <body>
@@ -35,6 +39,8 @@
 
                     <label for="lineEquation">Ecuacion de la linea</label>
                     <output id="lineEquation">—</output>
+
+                    <button id="upLevel">Siguiente Nivel</button>
                 </div>
             </nav>
 
@@ -124,11 +130,13 @@
 
     </body>
     <script src="equipos.js"></script>
-    <script src="geomegol_v44.js"></script>
+    <script src="niveles.js"></script><!-- V46 -->
+    <script src="geomegol_v41.js" id="gameVersion"></script>
     <script src="saquedeBanda.js"></script> <!-- V30-->
     <script src="saquedeMeta.js"></script> <!-- V31 -->
-    <!-- <script src="tirosLibres.js"></script> -->  <!-- Alfa N6-->
+    <script src="tirosLibres.js"></script> <!-- V46-->
     <script src="frases.js"></script>
     <script src="cancha.js"></script>
     <script src="show.js"></script>
+    
 </html>

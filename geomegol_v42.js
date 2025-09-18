@@ -45,7 +45,8 @@ const btn  = document.getElementById('moverBtn');
 const line = document.getElementById('lineEquation');
 
 // formaciones de los jugadores
-const formations = ["visitantes","visitantes_1","visitantes_2","visitantes_3"];
+const formations = ["visitantes","defensa_1","defensa_2","defensa_3","defensa_4","defensa_5","defensa_6","defensa_7","defensa_8","defensa_9","ofensiva_1",
+  "ofensiva_2","ofensiva_3","ofensiva_4","ofensiva_5","ofensiva_6","ofensiva_7","ofensiva_8","ofensiva_9","ofensiva_10"];
 
 //Coger los valores de las tablas
 const players = document.querySelectorAll('.players input');
@@ -344,6 +345,10 @@ function moverBalon(){
           showAuxButton();
           flashColors(0.5);
           flashColors(3);
+          // revisar si los locales van ganando el juego
+          if(marcador1.value > marcador2.value){
+          showNextLevelButton();
+            }
     }else if(pecosa_y <= 0 || pecosa_y >= canvas.height){
         mensaje.style.backgroundColor = "";
         mensaje.innerHTML = (pecosa_y <= 0) ? "Saque de banda del equipo visitante" : "Saque Lateral de los visitantes";

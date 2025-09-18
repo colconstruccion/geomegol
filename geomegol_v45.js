@@ -67,6 +67,9 @@ function iniciarJuego(){
   balon_x.value = canvas.width/2;
   balon_y.value = canvas.height/2;
   dibujarArqueros();
+  // Dibujar jugadores visitantes
+  let jugada = (marcador1.value !== "") ? marcador1.value: 0;
+  ubicarVisitantes(jugada);
 }
 
 function dibujarArqueros(){
@@ -108,6 +111,7 @@ function dibujarPelotaSaque(temp_x,temp_y){
   ctx.fillStyle = 'black';
   ctx.fill();
 }
+
 
 // Dibujar los jugadores
 for(let i=0; i < players.length / 2 ;i++){
@@ -165,11 +169,6 @@ for(let i=0; i < players.length / 2 ;i++){
           posLocal.push(coor_y);
         }
         
-        //dibujar jugadores visitantes
-        if (i == 1 && players[23].value.trim() === ""){
-          let jugada = (marcador1.value !== "") ? marcador1.value: 0;
-          ubicarVisitantes(jugada);
-        }
       })
     }
 
@@ -215,56 +214,24 @@ function dibujarLocales(){
 
 //dibujar los jugadores visitantes la primera vez
 function iniciarVisitantes(){
-  for(let i=22;i<players.length-2;i++){
-    let min_y = (i<30) ? 25 : 10;
-    let min_x = 0;
-    let fieldWidth;
-    if (i<30){
-      fieldWidth =  canvas.width;
-      min_x = 450
-    }else if(i<38){
-        min_x = 300;
-        fieldWidth = canvas.width - 150;
-    }else{
-        min_x = 150;
-        fieldWidth = canvas.width - 300;
-    }
-
-    let fieldHeight = (i<30) ? canvas.height -25 : canvas.height;
-    if(i == 43){
-      //hacer el portero del equipo visitante
-      ctx.beginPath();
-      ctx.arc(585,canvas.height/2,5,0,2*Math.PI);
-      //ctx.strokStyle = "black";
-      ctx.stroke();
-      ctx.fillStyle = 'green';
-      ctx.fill();
-      players[42].value = 575;
-      players[43].value = canvas.height/2;
-    }else if(i % 2 !== 0){
-          console.log('cuando i es '+i+' min_x es ' +min_x);
-          console.log(min_y);
-          let coor_y = Math.round(Math.random()*(fieldHeight-min_y) + min_y) ;
-          let coor_x = Math.round(Math.random()*(fieldWidth-min_x) + min_x);
+  let n = 0;
+  for(let i=22;i<players.length;i+=2){
+        
+    let coor_x = playersData.visitantes[n].x;
+    let coor_y = playersData.visitantes[n].y;
+          // Asignar valores a las casillas
+          players[i].value = coor_x;
+          players[i+1].value = coor_y;
           let tempCoor_y = canvas.height-coor_y;
-          //revisar posiciones de los visitantes
-          let ocupada = revisarPosicion(coor_x,coor_y);
-          if(ocupada == true){
-            //undo the upcoming i++
-            i--;
-            continue;
-          }
-          let k = i - 1;
+    
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
           ctx.fillStyle = 'green';
           ctx.fill();
-        //actualizar el valor del input de los visitantes
-         players[k].value = coor_x.toFixed(2);
-         players[i].value = coor_y.toFixed(2);
+          //subir posicion del jugador
+          n++;
       }
-  }
 }
 
 // ubicar los jugadores visitantes
@@ -478,14 +445,14 @@ function patearBalon(){
         balon_y.readOnly = false;
         balon_x.readOnly = false;
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        //Redo all players
-        dibujarLocales();
-        iniciarVisitantes();
-        //Hacer la cancha
+         //Hacer la cancha
         drawGoalArea('left');
         drawGoalArea('right');
         drawCenterLineAndCircle();
         dibujarPelotaSaque(25,100);
+        //Redo all players
+        dibujarLocales();
+        ubicarVisitantes(Math.floor(Math.random()*formations.length));
     }else if (pecosa_x > canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
         pecosa_x = 575;
@@ -499,14 +466,14 @@ function patearBalon(){
           balon_y.readOnly = false;
           balon_x.readOnly = false;
           ctx.clearRect(0,0,canvas.width,canvas.height);
-          //Redo all players
-          dibujarLocales();
-          iniciarVisitantes();
           //Hacer la cancha
           drawGoalArea('left');
           drawGoalArea('right');
           drawCenterLineAndCircle();
           dibujarPelotaSaque(pecosa_x,pecosa_y);
+          //Redo all players
+          dibujarLocales();
+          ubicarVisitantes(Math.floor(Math.random()*formations.length));
           requestAnimationFrame(patearBalon);
     }else{
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
@@ -652,7 +619,6 @@ function showAuxButton() {
     resetCoor();
     reset.remove();
     moverBtn.classList.remove('is-hidden');
-    iniciarJuego();
     // resetear mensaje
     // reset back to the original gradient
       mensaje.style.background = "linear-gradient(180deg, #ffffff, #f7fbff)";
@@ -661,5 +627,9 @@ function showAuxButton() {
       mensaje.style.borderRadius = "12px";
       mensaje.style.color = "#475569";
       mensaje.innerText = "Que ruede la pelota!!!";
-  }); 
+      // iniciar juego
+      iniciarJuego();
+  });
+
+  
 }
