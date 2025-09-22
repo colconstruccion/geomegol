@@ -1,6 +1,6 @@
 // Que version cargar
 const LEVEL_KEY = "game_level";
-const MAX_LEVEL = 6;
+const MAX_LEVEL = 7;
 
 function getLevel() {
   const n = Number(localStorage.getItem(LEVEL_KEY));
@@ -39,8 +39,9 @@ document.addEventListener('DOMContentLoaded',function(){
         btnLevel.addEventListener("click",function(){
             const next = setLevel(getLevel() + 1);
             if (next === MAX_LEVEL){
-              btnLevel.disabled = true;
-              btnLevel.textContent =  `Nivel ${next} (máximo)`;          
+              //btnLevel.disabled = true;
+              //localStorage.setItem(LEVEL_KEY, 1);
+              btnLevel.textContent =  `Re-iniciar Torneo`;          
             }
             marcador1.value = "0";
             marcador2.value = "0";

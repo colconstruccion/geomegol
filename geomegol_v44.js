@@ -58,6 +58,7 @@ function resetCoor(){
 }
 
 function iniciarJuego(){
+  drawCenterLineAndCircle();
   //hacer el balon en la mita de la cancha
   ctx.beginPath();
   ctx.arc(canvas.width/2,canvas.height/2,5,0,2*Math.PI);
@@ -70,7 +71,6 @@ function iniciarJuego(){
   dibujarArqueros();
   drawGoalArea('left');
   drawGoalArea('right');
-  drawCenterLineAndCircle();
 }
 
 function dibujarArqueros(){

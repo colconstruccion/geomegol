@@ -73,6 +73,7 @@ function iniciarJuego(){
   drawGoalArea('right');
   // Dibujar jugadores visitantes
   let jugada = Math.floor(Math.random()*(formations.length/2))
+  iniciarLocales();
   ubicarVisitantes(jugada);
 }
 
@@ -236,37 +237,6 @@ function iniciarVisitantes(){
           //subir posicion del jugador
           n++;
       }
-}
-
-// ubicar los jugadores visitantes
-function ubicarVisitantes(j = 0){
-
-  if(j < 0 || j >= formations.length){
-    console.error(`formation index {$j} no esta`);
-    iniciarVisitantes();
-    return;
-  }
-
-  const key = formations[j];
-  const formation = playersData[key];
-
-  let n = 22;
-  for (i=0;i<players.length / 2;i++){
-    let coor_x = formation[i].x;
-    let coor_y = formation[i].y;
-      // Asignar valores a las casillas
-      players[n].value = coor_x;
-      players[n+1].value = coor_y;
-      let tempCoor_y = canvas.height - coor_y;
-      // Dibujar el jugador
-      ctx.beginPath();
-      ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
-      ctx.stroke();
-      ctx.fillStyle = 'green';
-      ctx.fill();
-      // subir posicion del jugador
-      n+=2;
-  }
 }
 
 function dibujarVisitantes(){
@@ -706,6 +676,85 @@ function drawGoalArea(side, {
 
     ctx.restore();
   }
+
+//dibujar los jugadores locales la primera vez
+function iniciarLocales(){
+  for(let i=0;i<players.length/2;i++){
+    let min_y = (i<30) ? 25 : 10;
+    let min_x = 0;
+    let fieldWidth;
+    if (i<10){
+      fieldWidth =  canvas.width / 4;
+      min_x = 25
+    }else if(i<18){
+        min_x = 150;
+        fieldWidth = canvas.width / 2;
+    }else{
+        min_x = 300;
+        fieldWidth = canvas.width - 25;
+    }
+
+    let fieldHeight = (i<30) ? canvas.height -25 : canvas.height;
+    if(i == 21){
+      //hacer el portero del equipo local
+      ctx.beginPath();
+      ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
+      //ctx.strokStyle = "black";
+      ctx.stroke();
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      players[20].value = 25;
+      players[21].value = canvas.height/2;
+    }else if(i % 2 !== 0){
+          console.log('cuando i es '+i+' min_x es ' +min_x);
+          //console.log(min_y);
+          let coor_y = Math.round(Math.random()*(fieldHeight-min_y) + min_y) ;
+          let coor_x = Math.round(Math.random()*(fieldWidth-min_x) + min_x);
+          let tempCoor_y = canvas.height-coor_y;
+        // Dibujar los jugadores
+          let k = i - 1;
+          ctx.beginPath();
+          ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+          ctx.stroke();
+          ctx.fillStyle = 'red';
+          ctx.fill();
+        //actualizar el valor del input de los visitantes
+         players[k].value = coor_x;
+         players[i].value = coor_y;
+      }
+  }
+}
+
+// ubicar los jugadores visitantes
+function ubicarVisitantes(j = 0){
+
+  if(j < 0 || j >= formations.length){
+    console.error(`formation index {$j} no esta`);
+    iniciarVisitantes();
+    return;
+  }
+
+  const key = formations[j];
+  const formation = playersData[key];
+
+  let n = 22;
+  for (i=0;i<players.length / 2;i++){
+    let coor_x = formation[i].x;
+    let coor_y = formation[i].y;
+      // Asignar valores a las casillas
+      players[n].value = coor_x;
+      players[n+1].value = coor_y;
+      let tempCoor_y = canvas.height - coor_y;
+      // Dibujar el jugador
+      ctx.beginPath();
+      ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+      ctx.stroke();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      // subir posicion del jugador
+      n+=2;
+  }
+}
 
   // Iniciar juego from geomegol.js
   iniciarJuego();
