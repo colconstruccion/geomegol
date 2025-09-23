@@ -36,8 +36,9 @@ function tiroLibre(){
           mensaje.innerHTML = "GOL!!! GOL DEL VISITANTE!";
           balon_x.value = "";
           balon_y.value = "";
-          marcador[1]++;
-          marcador2.value = marcador[1];
+          marcador.visita += 1;
+          marcador.ultimoGol = "visita"
+          marcador2.value = marcador.visita;
           tablero.style.backgroundColor = "BLUE";
           loc_x = 20;
           loc_y = 21;

@@ -16,9 +16,14 @@ let loc_y = 21;
 let gol_x = 610;
 let gol_y = 100;
 //marcador
-let marcador = [0,0];
+let marcador = {
+  local: 0,
+  visita: 0,
+  ultimoGol: null
+}
 const marcador1 = document.getElementById("scoreTeam1");
 const marcador2 = document.getElementById("scoreTeam2");
+
 //instruciones
 const instructionsCard = document.querySelector('.instructions-card');
 // instructionsCard.classList.remove('is-hidden'); // show
@@ -181,7 +186,7 @@ for(let i=0; i < players.length / 2 ;i++){
 
 }
 
-//Recuperar el balon por el equipo local
+//Revisar si las coordenadas estan ocupadas por los jugadores visitantes
 function revisarPosicion(temp_x,temp_y){
   for (let k=22; k<players.length; k+=2){
       coor_x = players[k].value;
@@ -307,8 +312,9 @@ function moverBalon(){
           mensaje.innerHTML = "GOL!!! GOL DEL LOCAL!";
           balon_x.value = "";
           balon_y.value = "";
-          marcador[0]++;
-          marcador1.value = marcador[0];
+          marcador.local += 1;
+          marcador.ultimoGol = "local";
+          marcador1.value = marcador.local;
           loc_x = 20;
           loc_y = 21;
           balon_y.readOnly = false;
@@ -332,9 +338,9 @@ function moverBalon(){
     }else if ( 0 < pecosa_x < canvas.width){
         mensaje.innerHTML = 'la posicion del balon en x es '+pecosa_x+'<br>';
         mensaje.innerHTML += "la posicion del balon en y es "+pecosa_y+"<br>";
-        console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
-        console.log("delta x "+delta_x+" delta y "+delta_y);
-        console.log("el balon esta en x entre 0 "+pecosa_x+" y "+canvas.width);
+       // console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
+       // console.log("delta x "+delta_x+" delta y "+delta_y);
+       // console.log("el balon esta en x entre 0 "+pecosa_x+" y "+canvas.width);
         mensaje.style.backgroundColor = "";
         requestAnimationFrame(moverBalon);
     }else{
@@ -394,8 +400,9 @@ function patearBalon(){
           mensaje.innerHTML = "GOL!!! GOL DEL VISITANTE!";
           balon_x.value = "";
           balon_y.value = "";
-          marcador[1]++;
-          marcador2.value = marcador[1];
+          marcador.visita += 1;
+          marcador.ultimoGol = "visita";
+          marcador2.value = marcador.visita;
           mensaje.style.backgroundColor = "BLUE";
           loc_x = 20;
           loc_y = 21;
@@ -450,7 +457,7 @@ function patearBalon(){
           ubicarVisitantes(Math.floor(Math.random()*formations.length));
           requestAnimationFrame(patearBalon);
     }else{
-        console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
+        //console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         mensaje.innerText = "posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y;
         mensaje.style.backgroundColor = "";
         requestAnimationFrame(patearBalon);
@@ -488,8 +495,8 @@ function paseLocal(pecosa_x,pecosa_y){
       coor_x = players[k].value;
       let j = k+1;
       if(loc_x == k && loc_y == j){
-        console.log("esta en la posicion del arquero");
-        console.log("j is"+j+"and k is"+k);
+        //console.log("esta en la posicion del arquero");
+        //console.log("j is"+j+"and k is"+k);
       }else if (coor_x !=0){
         let near_x = Math.abs(pecosa_x - coor_x);
         coor_y = canvas.height - players[j].value;
@@ -603,6 +610,13 @@ function showAuxButton() {
       mensaje.innerText = "Que ruede la pelota!!!";
       // iniciar juego
       iniciarJuego();
+      //patear balon desde la mitad del campo al marco local 
+    console.log(marcador.ultimoGol);
+    if(marcador.ultimoGol == "local"){
+          pecosa_x = canvas.width / 2;
+          pecosa_y = canvas.height / 2; 
+          setTimeout(tiroLibre,3000);
+        }
   });
 }
 
@@ -706,11 +720,18 @@ function iniciarLocales(){
       players[20].value = 25;
       players[21].value = canvas.height/2;
     }else if(i % 2 !== 0){
-          console.log('cuando i es '+i+' min_x es ' +min_x);
+          //console.log('cuando i es '+i+' min_x es ' +min_x);
           //console.log(min_y);
           let coor_y = Math.round(Math.random()*(fieldHeight-min_y) + min_y) ;
           let coor_x = Math.round(Math.random()*(fieldWidth-min_x) + min_x);
           let tempCoor_y = canvas.height-coor_y;
+          //revisar posiciones de los locales
+          let ocupada = revisarLocales(coor_x,tempCoor_y);
+          if(ocupada == true){
+            //undo the upcoming i++
+            i--;
+            continue;
+          }
         // Dibujar los jugadores
           let k = i - 1;
           ctx.beginPath();
@@ -725,11 +746,29 @@ function iniciarLocales(){
   }
 }
 
+//Revisar si las coordenadas estan ocupadas por los jugadores visitantes
+function revisarLocales(temp_x,temp_y){
+  for (let k=0; k<players.length/2; k+=2){
+      coor_x = players[k].value;
+      if (coor_x !=0){
+        let near_x = Math.abs(temp_x - coor_x);
+        let j = k+1;
+        coor_y = canvas.height - players[j].value;
+        let near_y = Math.abs(temp_y - coor_y);
+        if (near_x <= 5 && near_y <=5){
+          console.log("esta cerca de en x del jugador visitante "+coor_x+" esta distancia "+near_x);
+          console.log("esta cerca en y del jugador visitante "+coor_y+" esta distancia "+near_y);
+          return true;
+        }
+      }
+    }
+}
+
 // ubicar los jugadores visitantes
 function ubicarVisitantes(j = 0){
 
   if(j < 0 || j >= formations.length){
-    console.error(`formation index {$j} no esta`);
+    console.error(`formation index ${j} no esta`);
     iniciarVisitantes();
     return;
   }
@@ -738,7 +777,7 @@ function ubicarVisitantes(j = 0){
   const formation = playersData[key];
 
   let n = 22;
-  for (i=0;i<players.length / 2;i++){
+  for (i=0;i<players.length / 4;i++){
     let coor_x = formation[i].x;
     let coor_y = formation[i].y;
       // Asignar valores a las casillas
