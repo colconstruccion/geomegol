@@ -1,6 +1,6 @@
 // Que version cargar
 const LEVEL_KEY = "game_level";
-const MAX_LEVEL = 7;
+const MAX_LEVEL = 8;
 
 function getLevel() {
   const n = Number(localStorage.getItem(LEVEL_KEY));
