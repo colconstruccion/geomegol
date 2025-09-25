@@ -37,7 +37,7 @@ function saquedeMeta(){
           balon_x.value = "";
           balon_y.value = "";
           marcador.visita += 1;
-          marcado.ultimoGol = "visita";
+          marcador.ultimoGol = "visita";
           marcador2.value = marcador.visita;
           mensaje.style.backgroundColor = "BLUE";
           loc_x = 20;
@@ -61,8 +61,11 @@ function saquedeMeta(){
         drawCenterLineAndCircle();
         dibujarPelotaSaque(25,100);
         //Redo all players
-        dibujarLocales();
-        ubicarVisitantes(Math.floor(Math.random()*formations.length));
+        let min = 10;               // index 10 is the 11th item
+        let max = 19;               // index 19 is the 20nd item
+        randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+        ubicarVisitantes(randomIndex);
+        ubicarLocales(Math.floor(Math.random()*formations.length));
     }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;

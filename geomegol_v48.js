@@ -300,9 +300,6 @@ function moverBalon(){
       return;
     }
     
-    //distancia entre balon y objectivo
-    let delta_x = pecosa_x - obj_x;
-    let delta_y = pecosa_y - obj_y;
     // Distancia al gol
     let gol_delta_x = gol_x - pecosa_x;
     let gol_delta_y = gol_y - pecosa_y;
@@ -430,13 +427,13 @@ function patearBalon(){
         drawGoalArea('right');
         drawCenterLineAndCircle();
         dibujarPelotaSaque(25,100);
-        //Redo all players
-        dibujarLocales();
-        // Dibujar jugadores visitantes
+        // Ubicar jugadores locales
+        // ubicar jugadores visitantes
         let min = 10;               // index 10 is the 11th item
         let max = 19;               // index 19 is the 20nd item
-        let randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+        randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
         ubicarVisitantes(randomIndex);
+        ubicarLocales(randomIndex);
     }else if (pecosa_x > canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
         pecosa_x = 575;
@@ -456,7 +453,10 @@ function patearBalon(){
           drawCenterLineAndCircle();
           dibujarPelotaSaque(pecosa_x,pecosa_y);
           //Redo all players
-          dibujarLocales();
+          let min = 10;               // index 10 is the 11th item
+          let max = 19;               // index 19 is the 20nd item
+          randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+          ubicarLocales(randomIndex);
           ubicarVisitantes(Math.floor(Math.random()*formations.length));
           requestAnimationFrame(patearBalon);
     }else{
