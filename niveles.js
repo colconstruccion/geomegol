@@ -37,14 +37,22 @@ document.addEventListener('DOMContentLoaded',function(){
       btnLevel.insertAdjacentElement("afterend", levelLabel);
         
         btnLevel.addEventListener("click",function(){
-            const next = setLevel(getLevel() + 1);
-            if (next === MAX_LEVEL){
-              //btnLevel.disabled = true;
-              //localStorage.setItem(LEVEL_KEY, 1);
+            
+            const current =  getLevel();
+            if (current >= MAX_LEVEL){
+              // reiniciar en el nivel 1
+              setLevel(1);
               btnLevel.textContent =  `Re-iniciar Torneo`;          
+            }else{
+              // ir al siguiente al nivel
+              const next = setLevel(getLevel() + 1);
+              btnLevel.textContent =  `Siguiente Nivel ${next}`;
             }
+            // reiniciar marcador
             marcador1.value = "0";
             marcador2.value = "0";
+
+            // cargar pagina con nuevo nivel
             location.reload();
         });
     }
@@ -56,8 +64,8 @@ window.showNextLevelButton = function showNextLevelButton() {
   const current = getLevel();
   const next = Math.min(current + 1, MAX_LEVEL);
   btnLevel.textContent = (current < MAX_LEVEL) ? `Nivel ${current} -> Siguiente: ${next}`
-  : `Nivel ${current} (máximo)`;
-  btnLevel.disabled = current >= MAX_LEVEL;
+  : `Nivel ${current} (Reiniciar Torneo)`;
+  //btnLevel.disabled = current >= MAX_LEVEL;
   }
 };
 

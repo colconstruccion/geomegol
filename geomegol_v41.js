@@ -61,6 +61,7 @@ function resetCoor(){
 }
 
 function iniciarJuego(){
+  drawCenterLineAndCircle();
   //hacer el balon en la mita de la cancha
   ctx.beginPath();
   ctx.arc(canvas.width/2,canvas.height/2,5,0,2*Math.PI);
@@ -72,7 +73,8 @@ function iniciarJuego(){
   balon_y.value = canvas.height/2;
   drawGoalArea('left');
   drawGoalArea('right');
-  drawCenterLineAndCircle();
+  drawWidthMarks();
+  drawHeightMarks();
   dibujarArqueros();
 }
 
@@ -338,6 +340,9 @@ function moverBalon(){
     drawGoalArea('left');
     drawGoalArea('right');
     drawCenterLineAndCircle();
+    // Hacer marcas de dimensiones - coordenadas
+    drawWidthMarks();
+    drawHeightMarks();
      //pase entre jugadores del equipo local
     balonLocal = paseLocal(pecosa_x,pecosa_y);
     if (balonLocal == true){
@@ -437,7 +442,9 @@ function patearBalon(){
     //Redo all players
     dibujarLocales();
     dibujarVisitantes();
-    //dibujar balon
+    // Hacer marcas de dimension - coordenadas
+    drawWidthMarks();
+    drawHeightMarks();
     // se incremente la posicion horizontal y vertical
     pecosa_x -= Idx; 
     pecosa_y -= Idy;
@@ -493,6 +500,9 @@ function patearBalon(){
         drawGoalArea('right');
         drawCenterLineAndCircle();
         dibujarPelotaSaque(25,100);
+        // Hacer marcas de dimensiones - coordenadas
+        drawWidthMarks();
+        drawHeightMarks();
     }else if (pecosa_x > canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
         pecosa_x = 575;
@@ -514,6 +524,8 @@ function patearBalon(){
           drawGoalArea('right');
           drawCenterLineAndCircle();
           dibujarPelotaSaque(pecosa_x,pecosa_y);
+          drawWidthMarks();
+          drawHeightMarks();
           requestAnimationFrame(patearBalon);
     }else{
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);

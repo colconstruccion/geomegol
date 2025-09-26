@@ -14,6 +14,9 @@ function saquedeMeta(){
     drawCenterLineAndCircle();
     //dibujar arqueros
     dibujarArqueros();
+    //Hacer marcas de dimensiones - coordenadas
+    drawWidthMarks();
+    drawHeightMarks();
     //recuperar balon por el equipo local
     balonLocal = recuperarBalonLocal(pecosa_x,pecosa_y);
     if (balonLocal == true){
@@ -60,6 +63,8 @@ function saquedeMeta(){
         drawGoalArea('right');
         drawCenterLineAndCircle();
         dibujarPelotaSaque(25,100);
+        drawWidthMarks();
+        drawHeightMarks();
         //Redo all players
         let min = 10;               // index 10 is the 11th item
         let max = 19;               // index 19 is the 20nd item
