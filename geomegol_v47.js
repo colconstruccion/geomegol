@@ -221,6 +221,36 @@ function dibujarLocales(){
       }
 }
 
+// ubicar los jugadores locales
+function ubicarLocales(j = 0){
+
+  if(j < 0 || j >= formations.length){
+    console.error(`formation index ${j} no esta`);
+    iniciarLocales();
+    return;
+  }
+
+  const key = formations[j];
+  const formation = localesData[key];
+
+  let n = 0;
+  for (i=0;i<players.length / 4;i++){
+    let coor_x = formation[i].x;
+    let coor_y = formation[i].y;
+      // Asignar valores a las casillas
+      players[n].value = coor_x;
+      players[n+1].value = coor_y;
+      let tempCoor_y = canvas.height - coor_y;
+      // Dibujar el jugador
+      ctx.beginPath();
+      ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+      ctx.stroke();
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      // subir posicion del jugador
+      n+=2;
+  }
+}
 
 //dibujar los jugadores visitantes la primera vez
 function iniciarVisitantes(){

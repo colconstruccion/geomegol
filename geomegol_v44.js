@@ -45,7 +45,7 @@ const btn  = document.getElementById('moverBtn');
 const line = document.getElementById('lineEquation');
 
 // formaciones de los jugadores
-const formations = ["visitantes","defensa_1","defensa_2","defensa_3","defensa_4","defensa_5","defensa_6","defensa_7","defensa_8","defensa_9","ofensiva_1",
+const formations = ["defensa","defensa_1","defensa_2","defensa_3","defensa_4","defensa_5","defensa_6","defensa_7","defensa_8","defensa_9","ofensiva_1",
   "ofensiva_2","ofensiva_3","ofensiva_4","ofensiva_5","ofensiva_6","ofensiva_7","ofensiva_8","ofensiva_9","ofensiva_10"];
 
 //Coger los valores de las tablas
@@ -217,6 +217,36 @@ function dibujarLocales(){
       }
 }
 
+// ubicar los jugadores locales
+function ubicarLocales(j = 0){
+
+  if(j < 0 || j >= formations.length){
+    console.error(`formation index ${j} no esta`);
+    iniciarLocales();
+    return;
+  }
+
+  const key = formations[j];
+  const formation = localesData[key];
+
+  let n = 0;
+  for (i=0;i<players.length / 4;i++){
+    let coor_x = formation[i].x;
+    let coor_y = formation[i].y;
+      // Asignar valores a las casillas
+      players[n].value = coor_x;
+      players[n+1].value = coor_y;
+      let tempCoor_y = canvas.height - coor_y;
+      // Dibujar el jugador
+      ctx.beginPath();
+      ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+      ctx.stroke();
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      // subir posicion del jugador
+      n+=2;
+  }
+}
 
 //dibujar los jugadores visitantes la primera vez
 function iniciarVisitantes(){
