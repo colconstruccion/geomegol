@@ -74,6 +74,8 @@ function iniciarJuego(){
   drawGoalArea('left');
   drawGoalArea('right');
   dibujarArqueros();
+  drawWidthMarks();
+  drawHeightMarks();
 }
 
 function dibujarArqueros(){
@@ -307,6 +309,8 @@ function moverBalon(){
     drawGoalArea('left');
     drawGoalArea('right');
     drawCenterLineAndCircle();
+    drawWidthMarks();
+    drawHeightMarks();
      //pase entre jugadores del equipo local
     balonLocal = paseLocal(pecosa_x,pecosa_y);
     if (balonLocal == true){
@@ -403,6 +407,8 @@ function patearBalon(){
     drawGoalArea('left');
     drawGoalArea('right');
     drawCenterLineAndCircle();
+    drawWidthMarks();
+    drawHeightMarks();
     //Redo all players
     dibujarLocales();
     dibujarVisitantes();
@@ -458,6 +464,8 @@ function patearBalon(){
         drawGoalArea('left');
         drawGoalArea('right');
         drawCenterLineAndCircle();
+        drawWidthMarks();
+        drawHeightMarks();
         dibujarPelotaSaque(25,100);
         //Redo all players
         dibujarLocales();
@@ -479,6 +487,8 @@ function patearBalon(){
           drawGoalArea('left');
           drawGoalArea('right');
           drawCenterLineAndCircle();
+          drawWidthMarks();
+          drawHeightMarks();
           dibujarPelotaSaque(pecosa_x,pecosa_y);
           //Redo all players
           dibujarLocales();

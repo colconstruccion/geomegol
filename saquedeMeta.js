@@ -70,7 +70,7 @@ function saquedeMeta(){
         let max = 19;               // index 19 is the 20nd item
         randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
         ubicarVisitantes(randomIndex);
-        ubicarLocales(Math.floor(Math.random()*formations.length));
+        ubicarLocales(Math.floor(Math.random()*max));
     }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;

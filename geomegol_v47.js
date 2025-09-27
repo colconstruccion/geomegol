@@ -50,7 +50,7 @@ const btn  = document.getElementById('moverBtn');
 const line = document.getElementById('lineEquation');
 
 // formaciones de los jugadores
-const formations = ["visitantes","defensa_1","defensa_2","defensa_3","defensa_4","defensa_5","defensa_6","defensa_7","defensa_8","defensa_9","ofensiva_1",
+const formations = ["defensa","defensa_1","defensa_2","defensa_3","defensa_4","defensa_5","defensa_6","defensa_7","defensa_8","defensa_9","ofensiva_1",
   "ofensiva_2","ofensiva_3","ofensiva_4","ofensiva_5","ofensiva_6","ofensiva_7","ofensiva_8","ofensiva_9","ofensiva_10"];
 
 //Coger los valores de las tablas
@@ -433,7 +433,10 @@ function patearBalon(){
         dibujarPelotaSaque(25,100);
         //Redo all players
         dibujarLocales();
-        ubicarVisitantes(Math.floor(Math.random()*formations.length));
+        let min = 1;               // index 10 is the 11th item
+        let max = 19;               // index 19 is the 20nd item
+        randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+        ubicarVisitantes(randomIndex);
     }else if (pecosa_x > canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
         pecosa_x = 575;
