@@ -1,6 +1,7 @@
 // Que version cargar
 const LEVEL_KEY = "game_level";
-const MAX_LEVEL = 9;
+const MAX_LEVEL = 10;
+const BASE_VERSION = 40;
 
 function getLevel() {
   const n = Number(localStorage.getItem(LEVEL_KEY));
@@ -18,9 +19,9 @@ document.addEventListener('DOMContentLoaded',function(){
     // escribe la version correcta del script
     const level = getLevel();
     const gameScript = document.getElementById("gameVersion");
-    
+    let version = Number(BASE_VERSION) + Number(level);
     if (gameScript){
-      gameScript.src = `geomegol_v4${level}.js?v=${Date.now()}`;
+      gameScript.src = `geomegol_v${version}.js?v=${Date.now()}`;
     }
    
 

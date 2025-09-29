@@ -6,7 +6,7 @@ const ctx = canvas.getContext('2d');
 let balon_x = document.getElementById('ball-x');
 let balon_y = document.getElementById('ball-y');
 balon_y.addEventListener('change',dibujarBalon)
-//coordenadas iniciales del jugador
+//coordenadas iniciales como objetivo
 let obj_x = 0;
 let obj_y = 0;
 //index del array con las coordenadas de los jugadores
@@ -124,21 +124,36 @@ function dibujarVisitante(){
     ctx.fillStyle = 'green';
     ctx.fill();
     // quitar jugador visitante
-    let min = 22;               // index 10 is the 11th item
-    let max = 40;               // index 19 is the 20nd item
-    let randomEven = Math.floor(Math.random() * ((max - min) / 2 + 1)) * 2 + min;
-    //console.log(players[randomEven].value);
-    let temp_x = Number(players[randomEven].value);
-    let temp_y= canvas.height - Number(players[randomEven + 1].value);
+    
+    //distancia del jugador visitantes al local que cogio el balon
+    let delta = 5;
+    let temp_x = players[22].value;
+    let temp_y = players[23].value;
+    
+    for (let k=22; k<players.length; k+=2){
+      coor_x = players[k].value;
+      let near_x = Math.abs(balon_x.value - coor_x);
+      let j = k+1;
+      coor_y = canvas.height - players[j].value;
+      let near_y = Math.abs(visi_y - coor_y);
+      console.log('este jugador visitante '+coor_x+' ira a marcar');  
+        if (near_x <= delta && near_y <= delta){
+          temp_x = Number(players[k].value);
+          temp_y= canvas.height - Number(players[j].value);
+          // poner nuevos valores en la casilla del visitantes
+          players[k].value =  visi_x;
+          players[j].value = balon_y.value;
+          break;
+        }
+        delta = delta + 5;
+    }
     ctx.beginPath();
     ctx.arc(temp_x,temp_y,5,0,2*Math.PI);
     ctx.fillStyle = 'white';
     ctx.fill();
     ctx.strokeStyle = 'white';
     ctx.stroke();
-    // poner nuevos valores en la casilla del visitantes
-    players[randomEven].value =  visi_x;
-    players[randomEven+1].value = balon_y.value; 
+     
 }
 
 function dibujarPelotaSaque(temp_x,temp_y){
@@ -328,7 +343,7 @@ function moverBalon(){
       mensaje.innerHTML =  fraseDesviada();
       return;
     }
-
+    
     //resetear color del jugador que tenia el balon
     players[loc_x].style.backgroundColor = "";
     players[loc_y].style.backgroundColor = "";
@@ -360,12 +375,20 @@ function moverBalon(){
         mensaje.style.backgroundColor = "";
         mensaje.innerHTML = (pecosa_y <= 0) ? "Saque de banda del equipo visitante" : "Saque Lateral de los visitantes";
         saquedeBanda();
-    }else if(0 > pecosa_x || pecosa_x >= canvas.width){
+    }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
          //saque de meta
          // reposicionar el balon en la mitad de la altura del campo de juego
+         pecosa_x = canvas.width;
          pecosa_y = canvas.height/2;
          saquedeMeta();    
+    }else if(pecosa_x < 0){
+        mensaje.innerHTML = "Tiro de Esquina";
+         //saque de meta
+         // reposicionar el balon en la mitad de la altura del campo de juego
+         pecosa_y = 0;
+         pecosa_x = 0;
+         tirodeEsquina(canvas.width/20,canvas.height/2);    
     }else if ( 0 < pecosa_x < canvas.width){
         mensaje.innerHTML = 'la posicion del balon en x es '+pecosa_x+'<br>';
         mensaje.innerHTML += "la posicion del balon en y es "+pecosa_y+"<br>";
@@ -450,7 +473,7 @@ function patearBalon(){
         mensaje.innerHTML = "Saque de banda del equipo local";
     }else if(pecosa_x <= 0){
         mensaje.innerHTML = "Saque de meta del local";
-        balon_x.value = 15;
+        balon_x.value = 25;
         balon_y.value = canvas.height/2;
         loc_x = 20;
         loc_y = 21;
@@ -461,7 +484,7 @@ function patearBalon(){
         drawGoalArea('left');
         drawGoalArea('right');
         drawCenterLineAndCircle();
-        dibujarPelotaSaque(25,100);
+        dibujarPelotaSaque(25,canvas.height/2);
         // Ubicar jugadores locales
         // ubicar jugadores visitantes
         let min = 10;               // index 10 is the 11th item
@@ -469,14 +492,14 @@ function patearBalon(){
         randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
         ubicarVisitantes(randomIndex);
         ubicarLocales(randomIndex);
+        drawWidthMarks();
+        drawHeightMarks();
     }else if (pecosa_x > canvas.width){
-        mensaje.innerHTML = "Saque de meta del visitante";
-        pecosa_x = 575;
-        pecosa_y = canvas.height/2;
-        pecosa_x -= Idx; 
-        pecosa_y -= Idy;
+        mensaje.innerHTML = "Tiro de Esquina";
+        pecosa_x = canvas.width;
+        pecosa_y = (pecosa_y > canvas.height/2) ? 0 : canvas.height;
           balon_x.value = pecosa_x;
-          balon_y.value = pecosa_y;
+          balon_y.value = canvas.height - pecosa_y;
           loc_x = 20;
           loc_y = 21;
           balon_y.readOnly = false;
@@ -493,7 +516,8 @@ function patearBalon(){
           randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
           ubicarLocales(randomIndex);
           ubicarVisitantes(Math.floor(Math.random()*formations.length));
-          requestAnimationFrame(patearBalon);
+          drawWidthMarks();
+          drawHeightMarks();
     }else{
         //console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         mensaje.innerText = "posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y;
@@ -540,8 +564,8 @@ function paseLocal(pecosa_x,pecosa_y){
         coor_y = canvas.height - players[j].value;
         let near_y = Math.abs(pecosa_y - coor_y);
         if (near_x <= 5 && near_y <=5){
-          console.log("esta cerca de en x del equipo local "+coor_x+" esta distancia "+near_x);
-          console.log("esta cerca en y de "+coor_y+" esta distancia "+near_y);
+          //console.log("esta cerca de en x del equipo local "+coor_x+" esta distancia "+near_x);
+          //console.log("esta cerca en y de "+coor_y+" esta distancia "+near_y);
           //mover la pelota al arco del local
           //resetear coordenadas del balon
           balon_x.value = pecosa_x;
@@ -551,8 +575,8 @@ function paseLocal(pecosa_x,pecosa_y){
           loc_x = k;
           loc_y = j;
           dibujarBalon();
-          players[loc_x].style.backgroundColor = "yellow";
-          players[loc_y].style.backgroundColor = "yellow";
+          players[loc_x].style.backgroundColor = "lightblue";
+          players[loc_y].style.backgroundColor = "lightblue";
           return true;
         }
       }
