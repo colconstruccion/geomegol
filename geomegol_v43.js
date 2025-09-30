@@ -258,7 +258,7 @@ function ubicarLocales(j = 0){
 //dibujar los jugadores visitantes la primera vez
 function iniciarVisitantes(){
   let n = 0;
-  for(let i=22;i<players.length;i+=2){
+  for(let i=22;i<players.length-1 ;i+=2){
         
     let coor_x = playersData.visitantes[n].x;
     let coor_y = playersData.visitantes[n].y;
@@ -500,8 +500,8 @@ function patearBalon(){
         drawHeightMarks();
         dibujarPelotaSaque(25,100);
         //Redo all players
-        dibujarLocales();
         ubicarVisitantes(4);
+        dibujarLocales();
     }else if (pecosa_x > canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
         pecosa_x = 575;
@@ -527,7 +527,7 @@ function patearBalon(){
           ubicarVisitantes(4);
           requestAnimationFrame(patearBalon);
     }else{
-        console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
+        //console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
         mensaje.innerText = "posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y;
         mensaje.style.backgroundColor = "";
         requestAnimationFrame(patearBalon);

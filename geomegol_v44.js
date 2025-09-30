@@ -417,6 +417,7 @@ document.getElementById('moverBtn').addEventListener('click',()=>{
     console.log("indice en x "+loc_x+"indice en y "+loc_y);
     console.log('coordenadas de la pelota '+ pecosa_x+' en y '+pecosa_y+" menos la altura del canvas ");
     instructionsCard.classList.add('is-hidden');      // hide instructions
+    // mover balon
     moverBalon();
 })
 
@@ -653,6 +654,7 @@ function showAuxButton() {
     drawCenterLineAndCircle();
     //resetear coordenadas
     resetCoor();
+    // quitar boton de reseteo
     reset.remove();
     moverBtn.classList.remove('is-hidden');
     iniciarJuego();
