@@ -222,6 +222,43 @@ function dibujarLocales(){
       }
 }
 
+// ubicar los jugadores visitantes de forma aleatoria
+function ubicarLocales(){
+  for(let i=0;i<20;i++){
+    let min_y = (i<8) ? 25 : 10;
+    let min_x = 0;
+    let fieldWidth;
+    if (i<8){
+      fieldWidth =  canvas.width - 300;
+      min_x = 50
+    }else if(i<18){
+        min_x = 300;
+        fieldWidth = canvas.width - 150;
+    }else{
+        min_x = 450;
+        fieldWidth = canvas.width;
+    }
+
+    let fieldHeight = (i<8) ? canvas.height -25 : canvas.height;
+    if(i % 2 !== 0){
+          //console.log('cuando i es '+i+' min_x es ' +min_x);
+          //console.log(min_y);
+          let coor_y = Math.floor(Math.random()*(fieldHeight-min_y) + min_y) ;
+          let coor_x = Math.floor(Math.random()*(fieldWidth-min_x) + min_x);
+          let tempCoor_y = canvas.height-coor_y;
+          
+          let k = i - 1;
+          ctx.beginPath();
+          ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+          ctx.stroke();
+          ctx.fillStyle = 'red';
+          ctx.fill();
+        //actualizar el valor del input de los visitantes
+         players[k].value = coor_x;
+         players[i].value = coor_y;
+      }
+  }
+}
 
 //dibujar los jugadores visitantes la primera vez
 function iniciarVisitantes(){
@@ -252,8 +289,8 @@ function iniciarVisitantes(){
       players[42].value = 575;
       players[43].value = canvas.height/2;
     }else if(i % 2 !== 0){
-          console.log('cuando i es '+i+' min_x es ' +min_x);
-          console.log(min_y);
+         // console.log('cuando i es '+i+' min_x es ' +min_x);
+         // console.log(min_y);
           let coor_y = Math.round(Math.random()*(fieldHeight-min_y) + min_y) ;
           let coor_x = Math.round(Math.random()*(fieldWidth-min_x) + min_x);
           let tempCoor_y = canvas.height-coor_y;

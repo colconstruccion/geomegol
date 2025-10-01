@@ -5,21 +5,53 @@
         <link rel="stylesheet" href="geomeStyles.css">
 
         <style>
-            #upLevel { display: none; }
+         /* style for the level */
+        #upLevel { display: none; }
+        /* style for the ads */ 
+        /* Float the futbolín image to the right of the tables */
+        .futbolin {
+        float: right;
+        width: 320px;              /* tweak to 280–360px if you like */
+        margin: 0 0 12px 16px;     /* space from tables on the left */
+        }
+
+        .futbolin img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;        /* optional nicety */
+        }
+
+        /* Make it stack on phones/tablets */
+        @media (max-width: 800px) {
+        .futbolin {
+            float: none;
+            width: 100%;
+            max-width: 520px;        /* keep it reasonable */
+            margin: 12px auto;       /* center it */
+        }
+        }
+
+        /* Ensure the section after the float clears properly (prevents weird overlap) */
+        .players::after {
+        content: "";
+        display: block;
+        clear: both;
+        }
         </style>
     </head>
 
     <body>
         <header><h1 class="brand-title">Geomegol</h1>
-            <h2 id="mensaje">Ubica los jugadores con sus coordenadas<br>
-            El campo de juego se localiza en el primer cuadrante cartesiano<br>
-            sus dimensiones son de 600 horizontal x 200 vertical</h2>
+            <h2 id="mensaje">Aprende Geometria jugando Geomegol</h2>
             <section class="instructions-card" aria-labelledby="instrucciones-title">
             <h3 id="instrucciones-title">Instrucciones</h3>
-            <p>Coloca las coordenadas (X,Y) para los jugadores locales y Usa ΔX y ΔY para mover el balon. Observa la pendiente (m) de la trayectoria.</p>
+            <p>Coloca las coordenadas (X,Y) para los jugadores locales y Usa ΔX y ΔY para mover el balon.</p>
             <ol class="instructions-list">
+                <li>El campo de juego se localiza en el primer cuadrante cartesiano</li>
+                <li>sus dimensiones son de 600 horizontal x 200 vertical</li>
                 <li>Ajusta <strong>ΔY</strong> y <strong>ΔX</strong> y presiona <em>Mover Balón</em>.</li>
-                <li>La <strong>pendiente (m)</strong> se muestra en la barra superior.</li>
+                <li>La <strong>pendiente (m)</strong> se muestra en la barra superior en la ecuacion de la linea y = mx + b.</li>
             </ol>
             </section>
 
@@ -119,6 +151,13 @@
                     </div>
                 </div>
             </div>
+        <figure class="futbolin">
+        <a href="https://www.etsy.com/listing/4329439153/wooden-board-soccer-magnetic-game-with" target="_blank" rel="noopener">
+            <img id="futbolinImage" src="images/futbolin_01.jpg" alt="Tablero de fútbol magnético">
+        </a>
+        <figcaption>Futbolín — jugadores magnéticos</figcaption>
+        </figure>
+
         </main>
 
         <footer>
@@ -135,5 +174,34 @@
     <script src="tirosLibres.js"></script> <!-- V46-->
     <script src="frases.js"></script>
     <script src="show.js"></script>
-    
+    <!-- script for ads-->
+     <script>
+    // === CONFIG ===
+    const totalImages = 8; // <-- change to however many images you have
+    const folder = "images/";
+    const prefix = "futbolin_";
+    const ext = ".jpg";
+
+    // pick a random starting image between 1 and totalImages
+    let current = Math.floor(Math.random() * totalImages) + 1;
+
+    const imgEl = document.getElementById("futbolinImage");
+
+    // show the random starting image immediately
+    function showImage(index) {
+        const num = String(index).padStart(2, "0");
+        imgEl.src = `${folder}${prefix}${num}${ext}`;
+    }
+    showImage(current);
+
+    // function to cycle to next image
+    function changeImage() {
+        current++;
+        if (current > totalImages) current = 1; // loop back
+        showImage(current);
+    }
+
+    // change every 10 seconds (10000 ms)
+    setInterval(changeImage, 10000);
+    </script>
 </html>
