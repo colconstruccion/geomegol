@@ -30,9 +30,13 @@ const moverBtn = document.getElementById('moverBtn');
 let prevCoor_x = 0;
 let prevCoor_y = 0;
 
-//posiciones del array
+// coordenadas del local
 const posLocal = [];
 const equipoLocal = [];
+
+// coordenanas del visitantes
+const posVisitante = [];
+const equipoVisitante = [];
 
 //Mensaje
 const mensaje = document.getElementById("mensaje");
@@ -75,7 +79,7 @@ function iniciarJuego(){
   drawGoalArea('right');
   drawWidthMarks();
   drawHeightMarks();
-  dibujarArqueros();
+  //dibujarArqueros();
 }
 
 function dibujarArqueros(){
@@ -118,7 +122,7 @@ function dibujarPelotaSaque(temp_x,temp_y){
   ctx.fill();
 }
 
-// Dibujar los jugadores
+// Dibujar los jugadores locales
 for(let i=0; i < players.length / 2 ;i++){
   if (i % 2 === 0){
     players[i].addEventListener("click",function(){
@@ -173,17 +177,53 @@ for(let i=0; i < players.length / 2 ;i++){
           posLocal.push(coor_x);
           posLocal.push(coor_y);
         }
-        
-        //dibujar jugadores visitantes
-        if (i == 1 && players[23].value.trim() === ""){
-          //let jugada = (marcador1.value !== "") ? marcador1.value: 0;
-          //ubicarVisitantes(jugada);
-          iniciarVisitantes();
-        }
       })
     }
 
     equipoLocal.push(posLocal);
+
+}
+
+// Dibujar los jugadores visitantes
+for(let i=22; i < players.length ;i++){
+  if (i % 2 === 0){
+    players[i].addEventListener("click",function(){
+      prevCoor_x = players[i].value;
+      let j = i + 1;
+      j = (j<players.length) ? j : 0;
+      prevCoor_y = players[j].value;
+      if (prevCoor_y !== "" && !isNaN(prevCoor_x)){
+          console.log(prevCoor_x);
+          console.log(prevCoor_y);
+          tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
+          ctx.beginPath();
+          ctx.arc(prevCoor_x,tempCoor_y,5,0,2*Math.PI);
+          ctx.fillStyle = 'white';
+          ctx.fill();
+          ctx.strokeStyle = 'white';
+          ctx.stroke();
+        }
+    })
+  }
+    if(i % 2 !== 0){
+      players[i].addEventListener("change",function(){
+        let k = i - 1;
+        let coor_y = canvas.height - players[i].value;
+        let coor_x = players[k].value;
+        
+          ctx.beginPath();
+          ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
+          ctx.strokeStyle = 'black';
+          ctx.stroke();
+          ctx.fillStyle = 'green';
+          ctx.fill();
+          posVisitante.push(coor_x);
+          posVisitante.push(coor_y);
+        
+      })
+    }
+
+    equipoVisitante.push(posVisitante);
 
 }
 
@@ -434,10 +474,18 @@ function moverBalon(){
         mensaje.style.backgroundColor = "";
         mensaje.innerHTML = (pecosa_y <= 0) ? "Saque de banda del equipo visitante" : "Saque Lateral de los visitantes";
         saquedeBanda();
-    }else if(0 > pecosa_x || pecosa_x >= canvas.width){
+    }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
          //saque de meta
+         pecosa_y =  canvas.height / 2;
          saquedeMeta();    
+    }else if(pecosa_x < 0){
+        mensaje.innerHTML = "Saque de meta del Local";
+         //saque de meta
+         //saquedeMeta(); only for v41
+        balon_x.value = 25;
+        balon_y.value = canvas.height/2;
+        dibujarPelotaSaque(25,100);    
     }else if ( 0 < pecosa_x < canvas.width){
         mensaje.innerHTML = 'la posicion del balon en x es '+pecosa_x+'<br>';
         mensaje.innerHTML += "la posicion del balon en y es "+pecosa_y+"<br>";
@@ -790,4 +838,75 @@ function drawGoalArea(side, {
     ctx.fill();
 
     ctx.restore();
+  }
+
+  // Funciones para hacer jugadores dibujando
+  let step = 0;
+  let paso = 22;
+  canvas.addEventListener('click',(e)=>{
+    const x = e.offsetX;
+    const y = e.offsetY;
+    if (x < canvas.width/2){
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokStyle = 'black';
+      ctx.stroke();
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      // llenar coordenadas en las casillas
+      llenarCoorsLocales(step,x,y);
+      step = step + 2;
+    }else if(x > canvas.width/2){
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokStyle = 'black';
+      ctx.stroke();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      //llenar coordenadas en las casillas de visitantes
+      llenarCoorsVisitantes(paso,x,y);
+      paso = paso + 2;
+    }
+    
+  })
+  
+  function llenarCoorsLocales(step,x,y){
+    if(step < 22){
+      players[step].value = x;
+      players[step+1].value = canvas.height - y;
+    }else{
+      step = 0;
+      let temp_x =  players[step].value;
+      let temp_y = players[step+1].value;
+      // borrar circulo anterior
+      ctx.beginPath();
+      ctx.arc(temp_x, temp_y, 5, 0, Math.PI * 2);
+      ctx.strokStyle = 'white';
+      ctx.stroke();
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      players[step].value = x;
+      players[step+1].value = y;
+    }
+      
+  }
+
+  function llenarCoorsVisitantes(paso,x,y){
+    if(paso < 44){
+      players[paso].value = x;
+      players[paso+1].value = canvas.height - y;
+    }else{
+      paso = 22;
+      let temp_x =  players[paso].value;
+      let temp_y = players[paso+1].value;
+      // borrar circulo anterior
+      ctx.beginPath();
+      ctx.arc(temp_x, temp_y, 5, 0, Math.PI * 2);
+      ctx.strokeStyle =  'white';
+      ctx.stroke();
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      players[paso].value = x;
+      players[paso+1].value = y;
+    }
   }
