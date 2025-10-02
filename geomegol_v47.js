@@ -255,7 +255,7 @@ function ubicarLocales(j = 0){
 //dibujar los jugadores visitantes la primera vez
 function iniciarVisitantes(){
   let n = 0;
-  for(let i=22;i<players.length;i+=2){
+  for(let i=22;i<players.length-1;i+=2){
         
     let coor_x = playersData.visitantes[n].x;
     let coor_y = playersData.visitantes[n].y;

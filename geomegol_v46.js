@@ -281,7 +281,7 @@ function ubicarVisitantes(j = 0){
   const formation = playersData[key];
 
   let n = 22;
-  for (i=0;i<players.length / 2;i++){
+  for (i=0;i<players.length / 4;i++){
     let coor_x = formation[i].x;
     let coor_y = formation[i].y;
       // Asignar valores a las casillas

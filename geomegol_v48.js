@@ -244,7 +244,7 @@ function iniciarVisitantes(){
 }
 
 function dibujarVisitantes(){
-  for(let i=22;i<players.length;i++){
+  for(let i=22;i<players.length-1;i++){
       if(i % 2 !== 0){
           let k = i - 1;
           let coor_y = players[i].value;
