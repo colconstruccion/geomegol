@@ -79,7 +79,6 @@ function iniciarJuego(){
   drawGoalArea('right');
   drawWidthMarks();
   drawHeightMarks();
-  //dibujarArqueros();
 }
 
 function dibujarArqueros(){
@@ -135,7 +134,7 @@ for(let i=0; i < players.length / 2 ;i++){
           console.log(prevCoor_y);
           tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
           ctx.beginPath();
-          ctx.arc(prevCoor_x,tempCoor_y,5,0,2*Math.PI);
+          ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
           ctx.fillStyle = 'white';
           ctx.fill();
           ctx.strokeStyle = 'white';
@@ -197,7 +196,7 @@ for(let i=22; i < players.length ;i++){
           console.log(prevCoor_y);
           tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
           ctx.beginPath();
-          ctx.arc(prevCoor_x,tempCoor_y,5,0,2*Math.PI);
+          ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
           ctx.fillStyle = 'white';
           ctx.fill();
           ctx.strokeStyle = 'white';
@@ -580,7 +579,7 @@ function patearBalon(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         //Redo all players
         dibujarLocales();
-        iniciarVisitantes();
+        dibujarVisitantes();
         //Hacer la cancha
         drawGoalArea('left');
         drawGoalArea('right');
@@ -847,23 +846,11 @@ function drawGoalArea(side, {
     const x = e.offsetX;
     const y = e.offsetY;
     if (x < canvas.width/2){
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.strokStyle = 'black';
-      ctx.stroke();
-      ctx.fillStyle = 'red';
-      ctx.fill();
-      // llenar coordenadas en las casillas
+      
       llenarCoorsLocales(step,x,y);
       step = step + 2;
     }else if(x > canvas.width/2){
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.strokStyle = 'black';
-      ctx.stroke();
-      ctx.fillStyle = 'green';
-      ctx.fill();
-      //llenar coordenadas en las casillas de visitantes
+      
       llenarCoorsVisitantes(paso,x,y);
       paso = paso + 2;
     }
@@ -871,42 +858,53 @@ function drawGoalArea(side, {
   })
   
   function llenarCoorsLocales(step,x,y){
+    console.log(step);
     if(step < 22){
+      //dibujar el jugador local
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokStyle = 'black';
+      ctx.stroke();
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      // llenar coordenadas en las casillas
       players[step].value = x;
       players[step+1].value = canvas.height - y;
     }else{
-      step = 0;
-      let temp_x =  players[step].value;
-      let temp_y = players[step+1].value;
-      // borrar circulo anterior
-      ctx.beginPath();
-      ctx.arc(temp_x, temp_y, 5, 0, Math.PI * 2);
-      ctx.strokStyle = 'white';
-      ctx.stroke();
-      ctx.fillStyle = 'white';
-      ctx.fill();
-      players[step].value = x;
-      players[step+1].value = y;
+      instructionsCard.textContent = "Cambie la posicion desde la tabla de posiciones";
+      instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo";
     }
       
   }
 
   function llenarCoorsVisitantes(paso,x,y){
+    console.log(paso);
     if(paso < 44){
+      // dibujar el jugador visitante
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokStyle = 'black';
+      ctx.stroke();
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      //llenar coordenadas en las casillas de visitantes
       players[paso].value = x;
       players[paso+1].value = canvas.height - y;
     }else{
-      paso = 22;
-      let temp_x =  players[paso].value;
-      let temp_y = players[paso+1].value;
-      // borrar circulo anterior
-      ctx.beginPath();
-      ctx.arc(temp_x, temp_y, 5, 0, Math.PI * 2);
-      ctx.strokeStyle =  'white';
-      ctx.stroke();
-      ctx.fillStyle = 'white';
-      ctx.fill();
-      players[paso].value = x;
-      players[paso+1].value = y;
+      instructionsCard.textContent = "Ubique el jugador visitante usando la tabla de coordenadas.";
+      instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo";
     }
   }
+
+  // funcion para mostrar coordenadas
+  let indicador;
+  const lineE =  document.getElementById('lineEquation');
+  indicador = document.createElement('div');
+  lineE.insertAdjacentElement("afterend", indicador);
+
+  canvas.addEventListener('mousemove',function(e){
+      const x = e.offsetX;
+      const y = canvas.height - e.offsetY;
+      console.log(x+" and "+y);
+      indicador.textContent = `X=${x} and Y=${y}`;
+    })
