@@ -228,7 +228,7 @@ for(let i=22; i < players.length ;i++){
 
 }
 
-//Recuperar el balon por el equipo local
+//Recuperar el balon por el equipo visitante
 function revisarPosicion(temp_x,temp_y){
   for (let k=22; k<players.length; k+=2){
       coor_x = players[k].value;
@@ -844,10 +844,15 @@ function drawGoalArea(side, {
    // Funciones para hacer jugadores dibujando
   let step = 0;
   let paso = 22;
+  let suppressedClick = false;
+
   canvas.addEventListener('click',(e)=>{
     const x = e.offsetX;
     const y = e.offsetY;
-    if (x < canvas.width/2){
+    //console.log("suppressedClick es "+suppressedClick);
+    if (suppressedClick){
+      return;
+    }else if (x < canvas.width/2){
       
       llenarCoorsLocales(step,x,y);
       step = step + 2;
@@ -860,14 +865,15 @@ function drawGoalArea(side, {
   })
   
   function llenarCoorsLocales(step,x,y){
-    console.log(step);
+    //console.log(step);
     if(step < 22){
       //dibujar el jugador local
+      ctx.fillStyle = 'red';
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokStyle = 'black';
       ctx.stroke();
-      ctx.fillStyle = 'red';
+      
       ctx.fill();
       // llenar coordenadas en las casillas
       players[step].value = x;
@@ -893,14 +899,15 @@ function drawGoalArea(side, {
   }
 
   function llenarCoorsVisitantes(paso,x,y){
-    console.log(paso);
+    //console.log(paso);
     if(paso < 44){
       // dibujar el jugador visitante
+      ctx.fillStyle = 'green';
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokStyle = 'black';
       ctx.stroke();
-      ctx.fillStyle = 'green';
+      
       ctx.fill();
       //llenar coordenadas en las casillas de visitantes
       players[paso].value = x;
@@ -932,6 +939,80 @@ function drawGoalArea(side, {
   canvas.addEventListener('mousemove',function(e){
       const x = e.offsetX;
       const y = canvas.height - e.offsetY;
-      console.log(x+" and "+y);
+      //console.log(x+" and "+y);
       indicador.textContent = `X=${x} and Y=${y}`;
     })
+
+  // funcion para arrastrar jugadores visitantes
+  let draggingIndex = -1;
+  
+  canvas.addEventListener('mousedown',function(e){
+      let temp_x = e.offsetX;
+      let temp_y = e.offsetY;
+      let index_x = posicionTomada(temp_x,temp_y);
+      //console.log(index_x);
+      if (index_x !== -1){
+        
+        draggingIndex = index_x;
+        console.log(draggingIndex);
+        temp_x = players[draggingIndex].value;
+        temp_y = canvas.height - players[draggingIndex + 1].value;
+        ctx.beginPath();
+        ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
+        //ctx.strokStyle = 'white';
+        //ctx.stroke();
+        ctx.fillStyle = 'white';
+        ctx.fill();
+      }else{
+        suppressedClick = false;
+      }
+  })
+
+  // dibujar jugador en la nueva posicion
+  canvas.addEventListener('mouseup',function(e){
+    //console.log("el index del jugdor cliqueado es "+ draggingIndex);
+    if (draggingIndex !== -1){
+      // orden para no hacer el click
+      suppressedClick = true;
+      const x = e.offsetX, y = e.offsetY;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      if (draggingIndex < 22){
+        ctx.fillStyle = 'red';
+      }else if(draggingIndex < 44){
+        ctx.fillStyle = 'green';
+      }
+      ctx.fill();
+      // rellenar coordenadas en la tabla
+      players[draggingIndex].value = x;
+      players[draggingIndex + 1].value = canvas.height - y;
+      //resetear el draggingIndex a -1
+      draggingIndex = -1;
+      // permitir mas ciruculos despues en el proximo click
+      setTimeout(() => suppressedClick = false, 0);
+    }else{
+      suppressedClick = false;
+    }
+  })
+
+  //Revisar si la posicion esta tomada
+  function posicionTomada(temp_x,temp_y){
+    for (let k=0; k<players.length; k+=2){
+        coor_x = players[k].value;
+        //console.log('suppressedClick es '+suppressedClick);
+          let near_x = Math.abs(temp_x - coor_x);
+          let j = k+1;
+          coor_y = canvas.height - players[j].value;
+          let near_y = Math.abs(temp_y - coor_y);
+          if (near_x <= 4 && near_y <= 4){
+            console.log("esta cerca de en x del jugador "+coor_x+" esta distancia "+near_x);
+            //console.log("esta cerca en y del jugador "+coor_y+" esta distancia "+near_y);
+            // borrar circulo anterior
+            //console.log(k);
+            return k;
+          }
+      }
+      return -1;
+  }
