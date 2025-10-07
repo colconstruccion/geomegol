@@ -16,7 +16,11 @@ let loc_y = 21;
 let gol_x = 610;
 let gol_y = 100;
 //marcador
-let marcador = [0,0];
+let marcador = {
+  local: 0,
+  visita: 0,
+  ultimoGol: null
+}
 const marcador1 = document.getElementById("scoreTeam1");
 const marcador2 = document.getElementById("scoreTeam2");
 //instruciones
@@ -123,7 +127,7 @@ function dibujarPelotaSaque(temp_x,temp_y){
 }
 
 
-// Dibujar los jugadores
+// Dibujar los jugadores locales
 for(let i=0; i < players.length / 2 ;i++){
   if (i % 2 === 0){
     players[i].addEventListener("click",function(){
@@ -132,11 +136,9 @@ for(let i=0; i < players.length / 2 ;i++){
       j = (j<players.length) ? j : 0;
       prevCoor_y = players[j].value;
       if (prevCoor_y !== "" && !isNaN(prevCoor_x)){
-          console.log(prevCoor_x);
-          console.log(prevCoor_y);
           tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
           ctx.beginPath();
-          ctx.arc(prevCoor_x,tempCoor_y,5,0,2*Math.PI);
+          ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
           ctx.fillStyle = 'white';
           ctx.fill();
           ctx.strokeStyle = 'white';
@@ -194,8 +196,6 @@ for(let i=22; i < players.length ;i++){
       j = (j<players.length) ? j : 0;
       prevCoor_y = players[j].value;
       if (prevCoor_y !== "" && !isNaN(prevCoor_x)){
-          console.log(prevCoor_x);
-          console.log(prevCoor_y);
           tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
           ctx.beginPath();
           ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
@@ -447,9 +447,6 @@ function moverBalon(){
       return;
     }
     
-    //distancia entre balon y objectivo
-    let delta_x = pecosa_x - obj_x;
-    let delta_y = pecosa_y - obj_y;
     // Distancia al gol
     let gol_delta_x = gol_x - pecosa_x;
     let gol_delta_y = gol_y - pecosa_y;
@@ -458,8 +455,8 @@ function moverBalon(){
           mensaje.innerHTML = "GOL!!! GOL DEL LOCAL!";
           balon_x.value = "";
           balon_y.value = "";
-          marcador[0]++;
-          marcador1.value = marcador[0];
+          marcador.local+=1;
+          marcador1.value = marcador.local;
           loc_x = 20;
           loc_y = 21;
           balon_y.readOnly = false;
@@ -492,7 +489,6 @@ function moverBalon(){
         mensaje.innerHTML = 'la posicion del balon en x es '+pecosa_x+'<br>';
         mensaje.innerHTML += "la posicion del balon en y es "+pecosa_y+"<br>";
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
-        console.log("delta x "+delta_x+" delta y "+delta_y);
         console.log("el balon esta en x entre 0 "+pecosa_x+" y "+canvas.width);
         mensaje.style.backgroundColor = "";
         requestAnimationFrame(moverBalon);
@@ -555,8 +551,8 @@ function patearBalon(){
           mensaje.innerHTML = "GOL!!! GOL DEL VISITANTE!";
           balon_x.value = "";
           balon_y.value = "";
-          marcador[1]++;
-          marcador2.value = marcador[1];
+          marcador.visita += 1;
+          marcador2.value = marcador.visita;
           mensaje.style.backgroundColor = "BLUE";
           loc_x = 20;
           loc_y = 21;

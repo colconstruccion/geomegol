@@ -53,7 +53,7 @@ function saquedeBanda(){
         pecosa_x -= Idx; 
         pecosa_y -= Idy;
         saquedeBandaAbajo();
-    }else if(pecosa_y <= 0){
+    }else if(pecosa_y <= 0 && pecosa_x >= 0){
         mensaje.innerHTML = "Saque de Banda Lateral"
         balon_x.value = pecosa_x;
         balon_y.value = canvas.height - pecosa_y;
@@ -79,7 +79,12 @@ function saquedeBanda(){
         //Reposicionar ubicacion al arquero
         loc_x = 20;
         loc_y = 21;
-        saquedeMeta();
+        // limpiar bola
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        ctx.arc(pecosa_x,pecosa_y,6,0,2*Math.PI);
+        ctx.fill();
+        dibujarPelotaSaque(25,100); 
     }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta";
         balon_x.value = 575;

@@ -16,7 +16,11 @@ let loc_y = 21;
 let gol_x = 610;
 let gol_y = 100;
 //marcador
-let marcador = [0,0];
+let marcador = {
+  local: 0,
+  visita: 0,
+  ultimoGol: null
+}
 const marcador1 = document.getElementById("scoreTeam1");
 const marcador2 = document.getElementById("scoreTeam2");
 //instruciones
@@ -115,7 +119,7 @@ function dibujarBalon(){
 function dibujarPelotaSaque(temp_x,temp_y){
   ctx.beginPath();
   ctx.arc(temp_x,temp_y,5,0,2*Math.PI);
-  ctx.strokeSyle = 'black';
+  ctx.strokeStyle = 'black';
   ctx.stroke();
   ctx.fillStyle = 'black';
   ctx.fill();
@@ -455,8 +459,8 @@ function moverBalon(){
           mensaje.innerHTML = "GOL!!! GOL DEL LOCAL!";
           balon_x.value = "";
           balon_y.value = "";
-          marcador[0]++;
-          marcador1.value = marcador[0];
+          marcador.local += 1;
+          marcador1.value = marcador.local;
           loc_x = 20;
           loc_y = 21;
           balon_y.readOnly = false;
@@ -552,8 +556,8 @@ function patearBalon(){
           mensaje.innerHTML = "GOL!!! GOL DEL VISITANTE!";
           balon_x.value = "";
           balon_y.value = "";
-          marcador[1]++;
-          marcador2.value = marcador[1];
+          marcador.visita += 1;
+          marcador2.value = marcador.visita;
           mensaje.style.backgroundColor = "BLUE";
           loc_x = 20;
           loc_y = 21;

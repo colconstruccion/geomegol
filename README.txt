@@ -1,8 +1,11 @@
+cancha.js
+77 llama funcion iniciarJuego()
 geomegol_v.js
 56 function iniciarJuego() dibuja balon en la mitad del campo y los dos arqueros
 69 funcion dibujarArqueros()
 90 funcion dibujarBalon()
 110 se dibujan los jugadores locales con una for loop que escucha por un cambio en la tabla de jugadores locales
+145 function moverJugador() en geomegol_v42
 175 function iniciarVisitantes() inicia las posiciones de los visitantes y las ubica en la tabla de visitantes
 178 funcion revisarPosicion revisa que el jugador local que se haga no tenga las coordenadas cercanas a un jugador visitante
 218 function dibujarVisitantes() coge las posiciones de la tabla de visitantes y dibuja los jugadores
@@ -34,6 +37,7 @@ saquedeMeta.js
 18 recuperarBalonLocal() revisa si la pelota la coge un jugador local
 70 requestAnimationFrame(saquedeMeta) la vuelve a llamar si pecosa_x >= canvas.width
 82 requestAnimationFrame(saquedeMeta) si no se cumplen las condiciones anteriores
+
 
 
 
