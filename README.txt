@@ -4,6 +4,7 @@ geomegol_v.js
 56 function iniciarJuego() dibuja balon en la mitad del campo y los dos arqueros
 69 funcion dibujarArqueros()
 90 funcion dibujarBalon()
+129 funcion borrarBalon() en geomegol_v41 and geomegol_v42
 110 se dibujan los jugadores locales con una for loop que escucha por un cambio en la tabla de jugadores locales
 145 function moverJugador() en geomegol_v42
 175 function iniciarVisitantes() inicia las posiciones de los visitantes y las ubica en la tabla de visitantes

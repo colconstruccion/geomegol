@@ -5,7 +5,8 @@ const ctx = canvas.getContext('2d');
 //balon
 let balon_x = document.getElementById('ball-x');
 let balon_y = document.getElementById('ball-y');
-balon_y.addEventListener('change',dibujarBalon)
+balon_x.addEventListener('click', borrarBalon);
+balon_y.addEventListener('change',dibujarBalon);
 //coordenadas iniciales del jugador
 let obj_x = 0;
 let obj_y = 0;
@@ -59,6 +60,23 @@ const formations = ["defensa","defensa_1","defensa_2","defensa_3","defensa_4","d
 //Coger los valores de las tablas
 const players = document.querySelectorAll('.players input');
 
+// Color de los equipos
+const localColorEl =  document.getElementById('localColor');
+let colorLocal = localColorEl.value;
+// Cambio del color del equipo local
+localColorEl.addEventListener('input', () =>{
+  colorLocal = localColorEl.value;
+  dibujarLocales();
+})
+// Cambio de color del equipo visitantes
+const visitaColorEl = document.getElementById('visitaColor');
+let colorVisitante = visitaColorEl.value;
+visitaColorEl.addEventListener('input', ()=>{
+  colorVisitante = visitaColorEl.value;
+  dibujarVisitantes();
+})
+
+
 // Iniciar juego from geomegol.js
 iniciarJuego();
 
@@ -91,7 +109,7 @@ function dibujarArqueros(){
   ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = colorLocal;
   ctx.fill();
   players[20].value = 25;
   players[21].value = canvas.height/2;
@@ -100,7 +118,7 @@ function dibujarArqueros(){
   ctx.arc(575,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = 'green';
+  ctx.fillStyle = colorVisitante;
   ctx.fill();
   players[42].value = 575;
   players[43].value = canvas.height/2;
@@ -114,6 +132,18 @@ function dibujarBalon(){
   ctx.stroke();
   ctx.fillStyle = 'black';
   ctx.fill();
+}
+
+function borrarBalon(){
+        temp_x = balon_x.value;
+        temp_y = canvas.height - balon_y.value;
+        // borrar circulo anterior
+        ctx.beginPath();
+        ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
+        ctx.strokStyle = 'white';
+        ctx.stroke();
+        ctx.fillStyle = 'white';
+        ctx.fill();
 }
 
 function dibujarPelotaSaque(temp_x,temp_y){
@@ -175,7 +205,7 @@ for(let i=0; i < players.length / 2 ;i++){
           ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
           ctx.strokeStyle = 'black';
           ctx.stroke();
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = colorLocal;
           ctx.fill();
           posLocal.push(coor_x);
           posLocal.push(coor_y);
@@ -218,7 +248,7 @@ for(let i=22; i < players.length ;i++){
           ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
           ctx.strokeStyle = 'black';
           ctx.stroke();
-          ctx.fillStyle = 'green';
+          ctx.fillStyle = colorVisitante;
           ctx.fill();
           posVisitante.push(coor_x);
           posVisitante.push(coor_y);
@@ -258,7 +288,7 @@ function dibujarLocales(){
             ctx.beginPath();
             ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = colorLocal;
             ctx.fill();
           }
         }
@@ -294,7 +324,7 @@ function ubicarLocales(){
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = colorLocal;
           ctx.fill();
         //actualizar el valor del input de los visitantes
          players[k].value = coor_x;
@@ -327,7 +357,7 @@ function iniciarVisitantes(){
       ctx.arc(585,canvas.height/2,5,0,2*Math.PI);
       //ctx.strokStyle = "black";
       ctx.stroke();
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.fill();
       players[42].value = 575;
       players[43].value = canvas.height/2;
@@ -348,7 +378,7 @@ function iniciarVisitantes(){
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
-          ctx.fillStyle = 'green';
+          ctx.fillStyle = colorVisitante;
           ctx.fill();
         //actualizar el valor del input de los visitantes
          players[k].value = coor_x.toFixed(2);
@@ -381,7 +411,7 @@ function ubicarVisitantes(j = 0){
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
       ctx.stroke();
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.fill();
       // subir posicion del jugador
       n+=2;
@@ -399,7 +429,7 @@ function dibujarVisitantes(){
             ctx.beginPath();
             ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = colorVisitante;
             ctx.fill();
           }
         }
@@ -870,7 +900,7 @@ function drawGoalArea(side, {
     //console.log(step);
     if(step < 22){
       //dibujar el jugador local
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = colorLocal;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokStyle = 'black';
@@ -883,19 +913,6 @@ function drawGoalArea(side, {
     }else{
       instructionsCard.textContent = "Cambie la posicion desde la tabla de posiciones";
       instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo";
-      // relocalizar jugador
-     /*  canvas.addEventListener("mousedown",function(e){
-        let temp_x =  e.offsetX;
-        let temp_y = e.offsetY;
-        // borrar circulo anterior
-        ctx.beginPath();
-        ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
-        ctx.strokStyle = 'white';
-        ctx.stroke();
-        ctx.fillStyle = 'white';
-        ctx.fill();
-      }) */
-      
     }
       
   }
@@ -904,7 +921,7 @@ function drawGoalArea(side, {
     //console.log(paso);
     if(paso < 44){
       // dibujar el jugador visitante
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokStyle = 'black';
@@ -965,6 +982,8 @@ function drawGoalArea(side, {
         //ctx.stroke();
         ctx.fillStyle = 'white';
         ctx.fill();
+        drawGoalArea('left');
+        drawGoalArea('right');
       }else{
         suppressedClick = false;
       }
@@ -982,9 +1001,9 @@ function drawGoalArea(side, {
       ctx.strokeStyle = 'black';
       ctx.stroke();
       if (draggingIndex < 22){
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = colorLocal;
       }else if(draggingIndex < 44){
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = colorVisitante;
       }
       ctx.fill();
       // rellenar coordenadas en la tabla
