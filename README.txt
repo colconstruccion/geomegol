@@ -25,7 +25,8 @@ geomegol_v.js
     442 requestAnimationFrame(patearBalon) llama de nuevo la funcion patearBalon si no se cumplen las condiciones anteriores
 446 function recuperarBalonLocal() Revisa si la pelota pasa cerca de un jugador local que la capture.
 471 function paseLocal() devuelve cierto (true) si un local local coge la pelota
-
+511 geomegol_v41 se llama la funcion saquedeArquero, adjuntada al archivo saquedeMeta.js
+512 geomegol_v41 nuevo {} para definir autogol del equipo local
 saquedeBanda.js
 15 recuperarBalonLocal() revisa si la pelota pasa cerca de un jugador local que la capture
 64 saquedeMeta() si pecosa_x es mayor que canvas.width llama esta funcion
