@@ -7,9 +7,9 @@ let balon_x = document.getElementById('ball-x');
 let balon_y = document.getElementById('ball-y');
 balon_x.addEventListener('click', borrarBalon);
 balon_y.addEventListener('change',dibujarBalon);
-//coordenadas iniciales del jugador
-let obj_x = 0;
-let obj_y = 0;
+// Definicion de gol local
+let obj_x = 10;
+let obj_y = 100;
 //index del array con las coordenadas de los jugadores
 let loc_x = 20;
 let loc_y = 21;
@@ -506,9 +506,24 @@ function moverBalon(){
         saquedeBanda();
     }else if(pecosa_x >= canvas.width){
         mensaje.innerHTML = "Saque de meta del visitante";
-         //saque de meta
-         pecosa_y =  canvas.height / 2;
-         saquedeMeta();    
+        //saque de meta
+        pecosa_y =  canvas.height / 2;
+        saquedeArquero();    
+    }else if(Math.abs(delta_y) <= 25 && Math.abs(delta_x) <= 10){
+          mensaje.innerHTML = "GOL DEL VISITANTE! JAJAJAJAJA";
+          balon_x.value = "";
+          balon_y.value = "";
+          marcador.visita += 1;
+          marcador2.value = marcador.visita;
+          mensaje.style.backgroundColor = "BLUE";
+          loc_x = 20;
+          loc_y = 21;
+          balon_y.readOnly = false;
+          balon_x.readOnly = false;
+          moverBtn.classList.add('is-hidden');
+          showAuxButton();
+          flashColors(0.5);
+          flashColors(3);
     }else if(pecosa_x < 0){
         mensaje.innerHTML = "Saque de meta del Local";
          //saque de meta
@@ -520,7 +535,6 @@ function moverBalon(){
         mensaje.innerHTML = 'la posicion del balon en x es '+pecosa_x+'<br>';
         mensaje.innerHTML += "la posicion del balon en y es "+pecosa_y+"<br>";
         console.log("posicion del balon en x "+pecosa_x+" posicion del balon en y "+pecosa_y);
-        console.log("delta x "+delta_x+" delta y "+delta_y);
         console.log("el balon esta en x entre 0 "+pecosa_x+" y "+canvas.width);
         mensaje.style.backgroundColor = "";
         requestAnimationFrame(moverBalon);
@@ -577,8 +591,8 @@ function patearBalon(){
       return;
     }
     // Distancia al gol
-    gol_delta_x = 10 - pecosa_x;
-    gol_delta_y = 100 - pecosa_y;
+    gol_delta_x = obj_x - pecosa_x;
+    gol_delta_y = obj_y - pecosa_y;
     if (Math.abs(gol_delta_y) <= 25 && Math.abs(gol_delta_x) <= 10){
           mensaje.innerHTML = "GOL!!! GOL DEL VISITANTE!";
           balon_x.value = "";
