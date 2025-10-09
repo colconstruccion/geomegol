@@ -91,7 +91,7 @@ function iniciarJuego(){
   //hacer el balon en la mita de la cancha
   ctx.beginPath();
   ctx.arc(canvas.width/2,canvas.height/2,5,0,2*Math.PI);
-  ctx.strokStyle = "black";
+  ctx.strokeStyle = "black";
   ctx.stroke();
   ctx.fillStyle = 'black';
   ctx.fill();
@@ -107,7 +107,6 @@ function dibujarArqueros(){
     //hacer el portero del equipo local
   ctx.beginPath();
   ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
-  //ctx.strokStyle = "black";
   ctx.stroke();
   ctx.fillStyle = colorLocal;
   ctx.fill();
@@ -116,7 +115,6 @@ function dibujarArqueros(){
   //hacer el portero del equipo visitante
   ctx.beginPath();
   ctx.arc(575,canvas.height/2,5,0,2*Math.PI);
-  //ctx.strokStyle = "black";
   ctx.stroke();
   ctx.fillStyle = colorVisitante;
   ctx.fill();
@@ -140,7 +138,7 @@ function borrarBalon(){
         // borrar circulo anterior
         ctx.beginPath();
         ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
-        ctx.strokStyle = 'white';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
         ctx.fillStyle = 'white';
         ctx.fill();
@@ -355,7 +353,6 @@ function iniciarVisitantes(){
       //hacer el portero del equipo visitante
       ctx.beginPath();
       ctx.arc(585,canvas.height/2,5,0,2*Math.PI);
-      //ctx.strokStyle = "black";
       ctx.stroke();
       ctx.fillStyle = colorVisitante;
       ctx.fill();
@@ -873,7 +870,7 @@ function drawGoalArea(side, {
     ctx.restore();
   }
 
-  // Funciones para hacer jugadores dibujando
+  // Funciones para hacer jugadores cliqueando
   let step = 0;
   let paso = 22;
   let suppressedClick = false;
@@ -903,7 +900,7 @@ function drawGoalArea(side, {
       ctx.fillStyle = colorLocal;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.strokStyle = 'black';
+      ctx.strokeStyle = 'black';
       ctx.stroke();
       
       ctx.fill();
@@ -924,7 +921,7 @@ function drawGoalArea(side, {
       ctx.fillStyle = colorVisitante;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.strokStyle = 'black';
+      ctx.strokeStyle = 'black';
       ctx.stroke();
       
       ctx.fill();
@@ -933,19 +930,7 @@ function drawGoalArea(side, {
       players[paso+1].value = canvas.height - y;
     }else{
       instructionsCard.textContent = "Ubique el jugador visitante usando la tabla de coordenadas.";
-      instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo";
-      /* canvas.addEventListener("mousedown",function(e){
-        let temp_x =  e.offsetX;
-        let temp_y = e.offsetY;
-        // borrar circulo anterior
-        ctx.beginPath();
-        ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
-        ctx.strokStyle = 'white';
-        ctx.stroke();
-        ctx.fillStyle = 'white';
-        ctx.fill();
-      }) */
-      
+      instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo"; 
     }
   }
 
@@ -964,24 +949,35 @@ function drawGoalArea(side, {
 
   // funcion para arrastrar jugadores visitantes
   let draggingIndex = -1;
-  
+  let pelotaClicked = false;
+
   canvas.addEventListener('mousedown',function(e){
       let temp_x = e.offsetX;
       let temp_y = e.offsetY;
       let index_x = posicionTomada(temp_x,temp_y);
+      pelotaClicked =  pelotaCliqueada(temp_x,temp_y);
       //console.log(index_x);
       if (index_x !== -1){
         
         draggingIndex = index_x;
-        console.log(draggingIndex);
+        // console.log(draggingIndex);
         temp_x = players[draggingIndex].value;
         temp_y = canvas.height - players[draggingIndex + 1].value;
         ctx.beginPath();
         ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
-        //ctx.strokStyle = 'white';
-        //ctx.stroke();
         ctx.fillStyle = 'white';
         ctx.fill();
+        drawCenterLineAndCircle();
+        drawGoalArea('left');
+        drawGoalArea('right');
+      }else if(pelotaClicked == true){
+        temp_x = Number(balon_x.value);
+        temp_y = Number(canvas.height - balon_y.value);
+        ctx.beginPath();
+        ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        drawCenterLineAndCircle();
         drawGoalArea('left');
         drawGoalArea('right');
       }else{
@@ -1013,6 +1009,20 @@ function drawGoalArea(side, {
       draggingIndex = -1;
       // permitir mas ciruculos despues en el proximo click
       setTimeout(() => suppressedClick = false, 0);
+    }else if(pelotaClicked == true){
+      //console.log(pelotaClicked);
+      suppressedClick = true;
+      const pelota_x = e.offsetX, pelota_y = e.offsetY;
+      ctx.beginPath();
+      ctx.arc(pelota_x, pelota_y, 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      ctx.fillStyle = 'black';
+      ctx.fill();
+      balon_x.value = pelota_x;
+      balon_y.value = canvas.height - pelota_y;
+      pelotaClicked = false;
+      setTimeout(() => suppressedClick = false, 0);
     }else{
       suppressedClick = false;
     }
@@ -1036,4 +1046,19 @@ function drawGoalArea(side, {
           }
       }
       return -1;
+  }
+
+  // Revisar si se hace click en la pelota
+  function pelotaCliqueada(temp_x,temp_y){
+    let pecosa_x = Number(balon_x.value);
+    let pecosa_y = Number(canvas.height - balon_y.value);
+    let near_x = Math.abs(temp_x - pecosa_x);
+    let near_y = Math.abs(temp_y - pecosa_y);
+    let disc = Number(near_x) * Number(near_x) + Number(near_y) * Number(near_y);
+    //console.log(disc);
+    if( disc <= 9){
+      return true;
+    }else{
+      return false;
+    }
   }

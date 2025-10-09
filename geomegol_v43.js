@@ -51,6 +51,22 @@ const formations = ["defensa","defensa_1","defensa_2","defensa_3","defensa_4","d
 //Coger los valores de las tablas
 const players = document.querySelectorAll('.players input');
 
+// Color de los equipos
+const localColorEl =  document.getElementById('localColor');
+let colorLocal = localColorEl.value;
+// Cambio del color del equipo local
+localColorEl.addEventListener('input', () =>{
+  colorLocal = localColorEl.value;
+  dibujarLocales();
+})
+// Cambio de color del equipo visitantes
+const visitaColorEl = document.getElementById('visitaColor');
+let colorVisitante = visitaColorEl.value;
+visitaColorEl.addEventListener('input', ()=>{
+  colorVisitante = visitaColorEl.value;
+  dibujarVisitantes();
+})
+
 // Iniciar juego from geomegol.js
 iniciarJuego();
 
@@ -84,7 +100,7 @@ function dibujarArqueros(){
   ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = $colorLocal;
   ctx.fill();
   players[20].value = 25;
   players[21].value = canvas.height/2;
@@ -169,7 +185,7 @@ for(let i=0; i < players.length / 2 ;i++){
           ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
           ctx.strokeStyle = 'black';
           ctx.stroke();
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = colorLocal;
           ctx.fill();
           posLocal.push(coor_x);
           posLocal.push(coor_y);
@@ -215,7 +231,7 @@ function dibujarLocales(){
             ctx.beginPath();
             ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = colorLocal;
             ctx.fill();
           }
         }
@@ -246,7 +262,7 @@ function ubicarLocales(j = 0){
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
       ctx.stroke();
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = colorLocal;
       ctx.fill();
       // subir posicion del jugador
       n+=2;
@@ -270,7 +286,7 @@ function iniciarVisitantes(){
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
-          ctx.fillStyle = 'green';
+          ctx.fillStyle = colorVisitante;
           ctx.fill();
           //subir posicion del jugador
           n++;
@@ -301,7 +317,7 @@ function ubicarVisitantes(j = 0){
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
       ctx.stroke();
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.fill();
       // subir posicion del jugador
       n+=2;
@@ -319,7 +335,7 @@ function dibujarVisitantes(){
             ctx.beginPath();
             ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = colorVisitante;
             ctx.fill();
           }
         }
@@ -751,4 +767,197 @@ function drawGoalArea(side, {
     ctx.fill();
 
     ctx.restore();
+  }
+
+   // Funciones para hacer jugadores cliqueando
+  let step = 0;
+  let paso = 22;
+  let suppressedClick = false;
+
+  canvas.addEventListener('click',(e)=>{
+    const x = e.offsetX;
+    const y = e.offsetY;
+    //console.log("suppressedClick es "+suppressedClick);
+    if (suppressedClick){
+      return;
+    }else if (x < canvas.width/2){
+      
+      llenarCoorsLocales(step,x,y);
+      step = step + 2;
+    }else if(x > canvas.width/2){
+      
+      llenarCoorsVisitantes(paso,x,y);
+      paso = paso + 2;
+    }
+    
+  })
+  
+  function llenarCoorsLocales(step,x,y){
+    //console.log(step);
+    if(step < 22){
+      //dibujar el jugador local
+      ctx.fillStyle = colorLocal;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      
+      ctx.fill();
+      // llenar coordenadas en las casillas
+      players[step].value = x;
+      players[step+1].value = canvas.height - y;
+    }else{
+      instructionsCard.textContent = "Cambie la posicion desde la tabla de posiciones";
+      instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo";
+    }
+      
+  }
+
+  function llenarCoorsVisitantes(paso,x,y){
+    //console.log(paso);
+    if(paso < 44){
+      // dibujar el jugador visitante
+      ctx.fillStyle = colorVisitante;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      
+      ctx.fill();
+      //llenar coordenadas en las casillas de visitantes
+      players[paso].value = x;
+      players[paso+1].value = canvas.height - y;
+    }else{
+      instructionsCard.textContent = "Ubique el jugador visitante usando la tabla de coordenadas.";
+      instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo"; 
+    }
+  }
+
+  // funcion para mostrar coordenadas
+  let indicador;
+  const lineE =  document.getElementById('lineEquation');
+  indicador = document.createElement('div');
+  lineE.insertAdjacentElement("afterend", indicador);
+
+  canvas.addEventListener('mousemove',function(e){
+      const x = e.offsetX;
+      const y = canvas.height - e.offsetY;
+      //console.log(x+" and "+y);
+      indicador.textContent = `X=${x} and Y=${y}`;
+    })
+
+  // funcion para arrastrar jugadores visitantes
+  let draggingIndex = -1;
+  let pelotaClicked = false;
+
+  canvas.addEventListener('mousedown',function(e){
+      let temp_x = e.offsetX;
+      let temp_y = e.offsetY;
+      let index_x = posicionTomada(temp_x,temp_y);
+      pelotaClicked =  pelotaCliqueada(temp_x,temp_y);
+      //console.log(index_x);
+      if (index_x !== -1){
+        
+        draggingIndex = index_x;
+        // console.log(draggingIndex);
+        temp_x = players[draggingIndex].value;
+        temp_y = canvas.height - players[draggingIndex + 1].value;
+        ctx.beginPath();
+        ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        drawCenterLineAndCircle();
+        drawGoalArea('left');
+        drawGoalArea('right');
+      }else if(pelotaClicked == true){
+        temp_x = Number(balon_x.value);
+        temp_y = Number(canvas.height - balon_y.value);
+        ctx.beginPath();
+        ctx.arc(temp_x, temp_y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        drawCenterLineAndCircle();
+        drawGoalArea('left');
+        drawGoalArea('right');
+      }else{
+        suppressedClick = false;
+      }
+  })
+
+  // dibujar jugador en la nueva posicion
+  canvas.addEventListener('mouseup',function(e){
+    //console.log("el index del jugdor cliqueado es "+ draggingIndex);
+    if (draggingIndex !== -1){
+      // orden para no hacer el click
+      suppressedClick = true;
+      const x = e.offsetX, y = e.offsetY;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      if (draggingIndex < 22){
+        ctx.fillStyle = colorLocal;
+      }else if(draggingIndex < 44){
+        ctx.fillStyle = colorVisitante;
+      }
+      ctx.fill();
+      // rellenar coordenadas en la tabla
+      players[draggingIndex].value = x;
+      players[draggingIndex + 1].value = canvas.height - y;
+      //resetear el draggingIndex a -1
+      draggingIndex = -1;
+      // permitir mas ciruculos despues en el proximo click
+      setTimeout(() => suppressedClick = false, 0);
+    }else if(pelotaClicked == true){
+      //console.log(pelotaClicked);
+      suppressedClick = true;
+      const pelota_x = e.offsetX, pelota_y = e.offsetY;
+      ctx.beginPath();
+      ctx.arc(pelota_x, pelota_y, 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      ctx.fillStyle = 'black';
+      ctx.fill();
+      balon_x.value = pelota_x;
+      balon_y.value = canvas.height - pelota_y;
+      pelotaClicked = false;
+      setTimeout(() => suppressedClick = false, 0);
+    }else{
+      suppressedClick = false;
+    }
+  })
+
+  //Revisar si la posicion esta tomada
+  function posicionTomada(temp_x,temp_y){
+    for (let k=0; k<players.length; k+=2){
+        coor_x = players[k].value;
+        //console.log('suppressedClick es '+suppressedClick);
+          let near_x = Math.abs(temp_x - coor_x);
+          let j = k+1;
+          coor_y = canvas.height - players[j].value;
+          let near_y = Math.abs(temp_y - coor_y);
+          if (near_x <= 4 && near_y <= 4){
+            console.log("esta cerca de en x del jugador "+coor_x+" esta distancia "+near_x);
+            //console.log("esta cerca en y del jugador "+coor_y+" esta distancia "+near_y);
+            // borrar circulo anterior
+            //console.log(k);
+            return k;
+          }
+      }
+      return -1;
+  }
+
+  // Revisar si se hace click en la pelota
+  function pelotaCliqueada(temp_x,temp_y){
+    let pecosa_x = Number(balon_x.value);
+    let pecosa_y = Number(canvas.height - balon_y.value);
+    let near_x = Math.abs(temp_x - pecosa_x);
+    let near_y = Math.abs(temp_y - pecosa_y);
+    let disc = Number(near_x) * Number(near_x) + Number(near_y) * Number(near_y);
+    //console.log(disc);
+    if( disc <= 9){
+      return true;
+    }else{
+      return false;
+    }
   }
