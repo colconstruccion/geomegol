@@ -56,6 +56,25 @@ const formations = ["defensa","defensa_1","defensa_2","defensa_3","defensa_4","d
 //Coger los valores de las tablas
 const players = document.querySelectorAll('.players input');
 
+// Color de los equipos
+const localColorEl =  document.getElementById('localColor');
+let colorLocal = localColorEl.value;
+// Cambio del color del equipo local
+localColorEl.addEventListener('input', () =>{
+  colorLocal = localColorEl.value;
+  dibujarLocales();
+})
+// Cambio de color del equipo visitantes
+const visitaColorEl = document.getElementById('visitaColor');
+let colorVisitante = visitaColorEl.value;
+visitaColorEl.addEventListener('input', ()=>{
+  colorVisitante = visitaColorEl.value;
+  dibujarVisitantes();
+})
+
+// Iniciar juego from geomegol.js
+iniciarJuego();
+
 function resetCoor(){
   for (let counter = 0; counter < players.length; counter++){
     players[counter].value = "";
@@ -88,7 +107,7 @@ function dibujarArqueros(){
   ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = colorLocal;
   ctx.fill();
   players[20].value = 25;
   players[21].value = canvas.height/2;
@@ -97,7 +116,7 @@ function dibujarArqueros(){
   ctx.arc(575,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = 'green';
+  ctx.fillStyle = colorVisitante;
   ctx.fill();
   players[42].value = 575;
   players[43].value = canvas.height/2;
@@ -121,7 +140,7 @@ function dibujarVisitante(){
     ctx.beginPath();
     ctx.arc(visi_x,visi_y,5,0,2*Math.PI);
     ctx.stroke();
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = colorVisitante;
     ctx.fill();
     // quitar jugador visitante
     
@@ -216,7 +235,7 @@ for(let i=0; i < players.length / 2 ;i++){
           ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
           ctx.strokeStyle = 'black';
           ctx.stroke();
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = colorLocal;
           ctx.fill();
           posLocal.push(coor_x);
           posLocal.push(coor_y);
@@ -257,7 +276,7 @@ function dibujarLocales(){
             ctx.beginPath();
             ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = colorLocal;
             ctx.fill();
           }
         }
@@ -279,7 +298,7 @@ function iniciarVisitantes(){
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
-          ctx.fillStyle = 'green';
+          ctx.fillStyle = colorVisitante;
           ctx.fill();
           //subir posicion del jugador
           n++;
@@ -297,7 +316,7 @@ function dibujarVisitantes(){
             ctx.beginPath();
             ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = colorVisitante;
             ctx.fill();
           }
         }
@@ -779,7 +798,7 @@ function iniciarLocales(){
       ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
       //ctx.strokStyle = "black";
       ctx.stroke();
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = colorLocal;
       ctx.fill();
       players[20].value = 25;
       players[21].value = canvas.height/2;
@@ -801,7 +820,7 @@ function iniciarLocales(){
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = colorLocal;
           ctx.fill();
         //actualizar el valor del input de los visitantes
          players[k].value = coor_x;
@@ -852,7 +871,7 @@ function ubicarVisitantes(j = 0){
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
       ctx.stroke();
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.fill();
       // subir posicion del jugador
       n+=2;
@@ -883,12 +902,9 @@ function ubicarLocales(j = 0){
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
       ctx.stroke();
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = colorLocal;
       ctx.fill();
       // subir posicion del jugador
       n+=2;
   }
 }
-
-  // Iniciar juego from geomegol.js
-  iniciarJuego();

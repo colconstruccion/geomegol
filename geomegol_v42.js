@@ -60,6 +60,22 @@ const formations = ["defensa","defensa_1","defensa_2","defensa_3","defensa_4","d
 //Coger los valores de las tablas
 const players = document.querySelectorAll('.players input');
 
+// Color de los equipos
+const localColorEl =  document.getElementById('localColor');
+let colorLocal = localColorEl.value;
+// Cambio del color del equipo local
+localColorEl.addEventListener('input', () =>{
+  colorLocal = localColorEl.value;
+  dibujarLocales();
+})
+// Cambio de color del equipo visitantes
+const visitaColorEl = document.getElementById('visitaColor');
+let colorVisitante = visitaColorEl.value;
+visitaColorEl.addEventListener('input', ()=>{
+  colorVisitante = visitaColorEl.value;
+  dibujarVisitantes();
+})
+
   // Iniciar juego from geomegol.js
   iniciarJuego();
 
@@ -93,7 +109,7 @@ function dibujarArqueros(){
   ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = colorLocal;
   ctx.fill();
   players[20].value = 25;
   players[21].value = canvas.height/2;
@@ -102,7 +118,7 @@ function dibujarArqueros(){
   ctx.arc(575,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = 'green';
+  ctx.fillStyle = colorVisitante;
   ctx.fill();
   players[42].value = 575;
   players[43].value = canvas.height/2;
@@ -112,9 +128,10 @@ function dibujarBalon(){
   let pecosa_x = balon_x.value;
   let pecosa_y = canvas.height - balon_y.value;
   ctx.beginPath();
+  ctx.fillStyle = 'black';
   ctx.arc(pecosa_x,pecosa_y,5,0,2*Math.PI);
   ctx.stroke();
-  ctx.fillStyle = 'black';
+  
   ctx.fill();
 }
 
@@ -191,7 +208,7 @@ for(let i=0; i < players.length / 2 ;i++){
           ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
           ctx.strokeStyle = 'black';
           ctx.stroke();
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = colorLocal;
           ctx.fill();
           posLocal.push(coor_x);
           posLocal.push(coor_y);
@@ -232,7 +249,7 @@ for(let i=22; i < players.length ;i++){
           ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
           ctx.strokeStyle = 'black';
           ctx.stroke();
-          ctx.fillStyle = 'green';
+          ctx.fillStyle = colorVisitante;
           ctx.fill();
           posVisitante.push(coor_x);
           posVisitante.push(coor_y);
@@ -272,7 +289,7 @@ function dibujarLocales(){
             ctx.beginPath();
             ctx.arc(coor_x,coor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = colorLocal;
             ctx.fill();
           }
         }
@@ -308,7 +325,7 @@ function ubicarLocales(){
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = colorLocal;
           ctx.fill();
         //actualizar el valor del input de los visitantes
          players[k].value = coor_x;
@@ -342,7 +359,7 @@ function iniciarVisitantes(){
       ctx.arc(585,canvas.height/2,5,0,2*Math.PI);
       //ctx.strokStyle = "black";
       ctx.stroke();
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.fill();
       players[42].value = 575;
       players[43].value = canvas.height/2;
@@ -363,7 +380,7 @@ function iniciarVisitantes(){
           ctx.beginPath();
           ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.stroke();
-          ctx.fillStyle = 'green';
+          ctx.fillStyle = colorVisitante;
           ctx.fill();
         //actualizar el valor del input de los visitantes
          players[k].value = coor_x.toFixed(2);
@@ -396,7 +413,7 @@ function ubicarVisitantes(j = 0){
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
       ctx.stroke();
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.fill();
       // subir posicion del jugador
       n+=2;
@@ -414,7 +431,7 @@ function dibujarVisitantes(){
             ctx.beginPath();
             ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
             ctx.stroke();
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = colorVisitante;
             ctx.fill();
           }
         }
@@ -494,6 +511,21 @@ function moverBalon(){
          //saque de meta
          pecosa_y =  canvas.height / 2;
          saquedeMeta();    
+    }else if(Math.abs(delta_y) <= 25 && Math.abs(delta_x) <= 10){
+          mensaje.innerHTML = "GOL DEL VISITANTE! JAJAJAJAJA";
+          balon_x.value = "";
+          balon_y.value = "";
+          marcador.visita += 1;
+          marcador2.value = marcador.visita;
+          mensaje.style.backgroundColor = "BLUE";
+          loc_x = 20;
+          loc_y = 21;
+          balon_y.readOnly = false;
+          balon_x.readOnly = false;
+          moverBtn.classList.add('is-hidden');
+          showAuxButton();
+          flashColors(0.5);
+          flashColors(3);
     }else if(pecosa_x <= 0){
         mensaje.innerHTML = "Saque de meta del Local";
          //saque de meta
@@ -880,7 +912,7 @@ function drawGoalArea(side, {
     //console.log(step);
     if(step < 22){
       //dibujar el jugador local
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = colorLocal;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokStyle = 'black';
@@ -914,7 +946,7 @@ function drawGoalArea(side, {
     //console.log(paso);
     if(paso < 44){
       // dibujar el jugador visitante
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = colorVisitante;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokStyle = 'black';
@@ -978,6 +1010,7 @@ function drawGoalArea(side, {
         drawCenterLineAndCircle();
         drawGoalArea('left');
         drawGoalArea('right');
+        dibujarBalon();
       }else if(pelotaClicked == true){
         temp_x = Number(balon_x.value);
         temp_y = Number(canvas.height - balon_y.value);
@@ -1018,7 +1051,11 @@ function drawGoalArea(side, {
       // permitir mas ciruculos despues en el proximo click
       setTimeout(() => suppressedClick = false, 0);
     }else if(pelotaClicked == true){
-      //console.log(pelotaClicked);
+      // Dibujar el campo de juego
+      drawCenterLineAndCircle();
+      drawGoalArea('left');
+      drawGoalArea('right');
+      // dibujar la pelota
       suppressedClick = true;
       const pelota_x = e.offsetX, pelota_y = e.offsetY;
       ctx.beginPath();
@@ -1101,36 +1138,39 @@ for (let i=0; i<players.length; i+=2){
     let delta_y = Number(obj_y) - Number(prevCoor_y);
     delta_x = Math.abs(delta_x);
     delta_y = Math.abs(delta_y);
-    ctx.beginPath();
+    // borrar la pelota
+        ctx.beginPath();
           ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
           ctx.fillStyle = 'white';
           ctx.fill();
           ctx.strokeStyle = 'white';
           ctx.stroke();
-          
+
         let step_x = Number(delta_x/10);
         let step_y = Number(delta_y/10);
         prevCoor_x = Number(prevCoor_x) + Number(step_x);
         prevCoor_y = Number(prevCoor_y) + Number(step_y);
-        console.log("se esta acercando "+isMoving+"delta_x"+step_x+" delta_y "+step_y);
+        //console.log("se esta acercando "+isMoving+"delta_x"+step_x+" delta_y "+step_y);
         tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
+        
         //dibujar jugador local
           ctx.beginPath();
           ctx.arc(prevCoor_x,tempCoor_y,5,0,2*Math.PI);
           ctx.strokeStyle = 'black';
           ctx.stroke();
-          ctx.fillStyle = (index_y < players.length/2) ? 'red': 'green';
-          //ctx.fillStyle = 'red';
+          ctx.fillStyle = (index_y < players.length/2) ? colorLocal: colorVisitante;
+        
           ctx.fill();
           drawGoalArea('left');
           drawGoalArea('right');
           dibujarLocales();
           dibujarVisitantes();
           drawCenterLineAndCircle();
+          //dibujarBalon();
         if(delta_x > 5 && delta_y > 5){
           requestAnimationFrame(moverJugador);
         }else{
-          ctx.arc(prevCoor_x-step_x,tempCoor_y-step_y,6,0,2*Math.PI);
+          ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
           ctx.fillStyle = 'white';
           ctx.fill();
           //ctx.strokeStyle = 'white';

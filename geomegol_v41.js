@@ -994,6 +994,7 @@ function drawGoalArea(side, {
         drawCenterLineAndCircle();
         drawGoalArea('left');
         drawGoalArea('right');
+        dibujarBalon();
       }else{
         suppressedClick = false;
       }

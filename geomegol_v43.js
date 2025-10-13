@@ -100,7 +100,7 @@ function dibujarArqueros(){
   ctx.arc(25,canvas.height/2,5,0,2*Math.PI);
   //ctx.strokStyle = "black";
   ctx.stroke();
-  ctx.fillStyle = $colorLocal;
+  ctx.fillStyle = colorLocal;
   ctx.fill();
   players[20].value = 25;
   players[21].value = canvas.height/2;
