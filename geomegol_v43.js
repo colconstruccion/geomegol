@@ -134,6 +134,21 @@ function dibujarPelotaSaque(temp_x,temp_y){
   ctx.fill();
 }
 
+function dibujarOpuesto(coor_x,coor_y){
+  let midWidth =  canvas.width/2;
+  let temp_x = midWidth + (midWidth - coor_x);
+  ctx.beginPath();
+  ctx.arc(temp_x,coor_y,5,0,2*Math.PI);
+  ctx.strokeSyle = 'black';
+  ctx.stroke();
+  ctx.fillStyle = colorVisitante;
+  ctx.fill();
+  // llenar coordenadas en la tabla de visitantes
+  players[paso].value = temp_x;
+  players[paso+1].value = canvas.height - coor_y;
+  paso = paso + 2;
+}
+
 
 // Dibujar los jugadores
 for(let i=0; i < players.length / 2 ;i++){
@@ -189,12 +204,6 @@ for(let i=0; i < players.length / 2 ;i++){
           ctx.fill();
           posLocal.push(coor_x);
           posLocal.push(coor_y);
-        }
-        
-        //dibujar jugadores visitantes
-        if (i == 1 && players[23].value.trim() === ""){
-          let jugada = (marcador1.value !== "") ? marcador1.value: 0;
-          ubicarVisitantes(jugada);
         }
       })
     }
@@ -687,7 +696,9 @@ function showAuxButton() {
     reset.remove();
     moverBtn.classList.remove('is-hidden');
     iniciarJuego();
-    // resetear mensaje
+    // resetear step y paso
+    step = 0;
+    paso = 22;
     // reset back to the original gradient
       mensaje.style.background = "linear-gradient(180deg, #ffffff, #f7fbff)";
       mensaje.style.border = "1px solid #e6eef7";
@@ -782,11 +793,11 @@ function drawGoalArea(side, {
       return;
     }else if (x < canvas.width/2){
       
-      llenarCoorsLocales(step,x,y);
-      step = step + 2;
+      step = llenarCoorsLocales(step,x,y);
+    
     }else if(x > canvas.width/2){
       
-      llenarCoorsVisitantes(paso,x,y);
+      paso = llenarCoorsVisitantes(paso,x,y);
       paso = paso + 2;
     }
     
@@ -795,17 +806,27 @@ function drawGoalArea(side, {
   function llenarCoorsLocales(step,x,y){
     //console.log(step);
     if(step < 22){
+ 
+        if(players[step].value.trim() !== ""){
+          step = step + 2 ;
+          return step;
+        }
+
       //dibujar el jugador local
       ctx.fillStyle = colorLocal;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokeStyle = 'black';
       ctx.stroke();
-      
       ctx.fill();
       // llenar coordenadas en las casillas
       players[step].value = x;
       players[step+1].value = canvas.height - y;
+      //dibujar jugador opuesto
+      dibujarOpuesto(x,y);
+      console.log('index en los locales '+step);
+      step = step + 2
+      return step;
     }else{
       instructionsCard.textContent = "Cambie la posicion desde la tabla de posiciones";
       instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo";
@@ -816,6 +837,15 @@ function drawGoalArea(side, {
   function llenarCoorsVisitantes(paso,x,y){
     //console.log(paso);
     if(paso < 44){
+      //borrar un jugador anterior si lo hay
+      if(players[paso].value.trim() !== ""){
+          temp_x = players[paso].value;
+          temp_y = canvas.height - players[paso+1].value;
+          ctx.beginPath();
+          ctx.fillStyle = 'white';
+          ctx.arc(temp_x, temp_y, 6, 0, Math.PI *2);
+          ctx.fill();
+        }
       // dibujar el jugador visitante
       ctx.fillStyle = colorVisitante;
       ctx.beginPath();
@@ -827,6 +857,8 @@ function drawGoalArea(side, {
       //llenar coordenadas en las casillas de visitantes
       players[paso].value = x;
       players[paso+1].value = canvas.height - y;
+
+      return paso;
     }else{
       instructionsCard.textContent = "Ubique el jugador visitante usando la tabla de coordenadas.";
       instructionsCard.innerHTML += "<br>La coordenada en Y tiene que cambiar para hacer el nuevo circulo"; 

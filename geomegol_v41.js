@@ -802,7 +802,9 @@ function showAuxButton() {
     reset.remove();
     moverBtn.classList.remove('is-hidden');
     iniciarJuego();
-    // resetear mensaje
+    // resetear step y paso
+    step = 0;
+    paso = 22;
     // reset back to the original gradient
       mensaje.style.background = "linear-gradient(180deg, #ffffff, #f7fbff)";
       mensaje.style.border = "1px solid #e6eef7";
