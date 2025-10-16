@@ -786,13 +786,19 @@ function drawGoalArea(side, {
   function llenarCoorsLocales(step,x,y){
     //console.log(step);
     if(step < 22){
+      //dibujar jugadores visitantes
+        if (step == 0 && players[paso].value.trim() === ""){
+          let jugada = (marcador1.value !== "") ? marcador1.value: 0;
+          ubicarVisitantes(jugada);
+          paso = 44;
+        }
+
       //dibujar el jugador local
       ctx.fillStyle = colorLocal;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.strokeStyle = 'black';
       ctx.stroke();
-      
       ctx.fill();
       // llenar coordenadas en las casillas
       players[step].value = x;
