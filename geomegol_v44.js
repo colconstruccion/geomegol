@@ -90,6 +90,8 @@ function iniciarJuego(){
   dibujarArqueros();
   drawGoalArea('left');
   drawGoalArea('right');
+  drawWidthMarks();
+  drawHeightMarks();
 }
 
 function dibujarArqueros(){

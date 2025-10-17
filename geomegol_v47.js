@@ -95,6 +95,8 @@ function iniciarJuego(){
   dibujarArqueros();
   drawGoalArea('left');
   drawGoalArea('right');
+  drawWidthMarks();
+  drawHeightMarks();
   // Dibujar jugadores visitantes
   let jugada = Math.floor(Math.random()*(formations.length/2))
   iniciarLocales();

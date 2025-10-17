@@ -90,6 +90,8 @@ function iniciarJuego(){
   dibujarArqueros();
   drawGoalArea('left');
   drawGoalArea('right');
+  drawWidthMarks();
+  drawHeightMarks();
   // Dibujar jugadores visitantes
   let jugada = (marcador1.value !== "") ? marcador1.value: 0;
   ubicarVisitantes(jugada);
