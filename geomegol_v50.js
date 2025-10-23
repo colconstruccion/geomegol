@@ -133,12 +133,13 @@ function dibujarBalon(){
 }
 
 function dibujarVisitante(){
-    //console.log(balon_x.value);
+    // Dibujo un jugador visitantes cerca al jugador local que coge la pelota
     let visi_x = Number(balon_x.value) + 30;
     //console.log(visi_x);
     let visi_y = canvas.height - Number(balon_y.value);
     ctx.beginPath();
     ctx.arc(visi_x,visi_y,5,0,2*Math.PI);
+    ctx.strokeStyle = 'black';
     ctx.stroke();
     ctx.fillStyle = colorVisitante;
     ctx.fill();
@@ -146,32 +147,50 @@ function dibujarVisitante(){
     
     //distancia del jugador visitantes al local que cogio el balon
     let delta = 5;
-    let temp_x = players[22].value;
-    let temp_y = players[23].value;
-    
+    let temp_x = 0;
+    let temp_y = 0;
+  
+    // reviso que jugador esta mas cerca al que jugador local que recibe la pelota
+    // usando la ubicacion de la pelota  
     for (let k=22; k<players.length; k+=2){
       coor_x = players[k].value;
       let near_x = Math.abs(balon_x.value - coor_x);
       let j = k+1;
       coor_y = canvas.height - players[j].value;
       let near_y = Math.abs(visi_y - coor_y);
-      console.log('este jugador visitante '+coor_x+' ira a marcar');  
+      console.log('este jugador visitante '+k+','+j+' ira a marcar');  
         if (near_x <= delta && near_y <= delta){
           temp_x = Number(players[k].value);
           temp_y= canvas.height - Number(players[j].value);
           // poner nuevos valores en la casilla del visitantes
           players[k].value =  visi_x;
           players[j].value = balon_y.value;
+          players[k].style.backgroundColor = "lightyellow";
+          players[j].style.backgroundColor = "lightyellow";
           break;
         }
         delta = delta + 5;
     }
+    
+    // cogera el primer jugador visitante si no hay otro mas cerca
+    if(temp_x == 0 && temp_y == 0){
+      temp_x = players[22].value;
+      temp_y = canvas.height - players[23].value;
+      players[22].value = visi_x;
+      players[23].value = balon_y.value;
+    }
+    
+    // borro el jugador visitante mas cerca a la pelota
     ctx.beginPath();
-    ctx.arc(temp_x,temp_y,5,0,2*Math.PI);
+    ctx.arc(temp_x,temp_y,6,0,2*Math.PI);
     ctx.fillStyle = 'white';
     ctx.fill();
     ctx.strokeStyle = 'white';
     ctx.stroke();
+
+    drawGoalArea('left');
+    drawGoalArea('right');
+    drawCenterLineAndCircle();
      
 }
 
@@ -315,6 +334,7 @@ function dibujarVisitantes(){
           if (coor_y != 0){
             ctx.beginPath();
             ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+            ctx.strokeStyle = 'black';
             ctx.stroke();
             ctx.fillStyle = colorVisitante;
             ctx.fill();
@@ -870,6 +890,7 @@ function ubicarVisitantes(j = 0){
       // Dibujar el jugador
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+      ctx.strokeStyle = 'black';
       ctx.stroke();
       ctx.fillStyle = colorVisitante;
       ctx.fill();
@@ -901,6 +922,7 @@ function ubicarLocales(j = 0){
       // Dibujar el jugador
       ctx.beginPath();
       ctx.arc(coor_x,tempCoor_y,5,0,2*Math.PI);
+      ctx.strokeStyle = 'black';
       ctx.stroke();
       ctx.fillStyle = colorLocal;
       ctx.fill();

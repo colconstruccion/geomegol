@@ -779,8 +779,9 @@ function drawGoalArea(side, {
       step = step + 2;
     }else if(x > canvas.width/2){
       
-      llenarCoorsVisitantes(paso,x,y);
-      paso = paso + 2;
+      //llenarCoorsVisitantes(paso,x,y);
+      //paso = paso + 2;
+      mensaje.innerText = "En la juega en la juega!!!";
     }
     
   })
