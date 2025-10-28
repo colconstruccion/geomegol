@@ -644,8 +644,29 @@ function updateSlope() {
   }
 }
 
+ // funcion para mostrar angulo
+  let angulo;
+  angulo = document.createElement('div');
+  dxEl.addEventListener('change', updateAngle);
+ 
+  function getAngle(adjacent,opposite){
+    // calculate theta in radians
+    const thetaRadians = Math.atan(opposite / adjacent);
+    // convert to degrees
+    const thetaDegrees = thetaRadians * (180 / Math.PI);
+    return thetaDegrees;
+  }
+
+  function updateAngle(){
+      //display angle
+    const theta = getAngle(parseFloat(dxEl.value),parseFloat(dyEl.value));
+    angulo.textContent = `θ = ${theta.toFixed(2)}°`
+    lineE.insertAdjacentElement("afterend", angulo);
+  }
+
 
 btn.addEventListener('click', updateSlope);
+btn.addEventListener('click', updateAngle);
 // Optional: update live as values change
 dyEl.addEventListener('input', updateSlope);
 dxEl.addEventListener('input', updateSlope);

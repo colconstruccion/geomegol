@@ -789,8 +789,28 @@ function updateSlope() {
   }
 }
 
+ // funcion para mostrar angulo
+  let angulo;
+  angulo = document.createElement('div');
+  dxEl.addEventListener('change', updateAngle);
+ 
+  function getAngle(adjacent,opposite){
+    // calculate theta in radians
+    const thetaRadians = Math.atan(opposite / adjacent);
+    // convert to degrees
+    const thetaDegrees = thetaRadians * (180 / Math.PI);
+    return thetaDegrees;
+  }
+
+  function updateAngle(){
+      //display angle
+    const theta = getAngle(parseFloat(dxEl.value),parseFloat(dyEl.value));
+    angulo.textContent = `θ = ${theta.toFixed(2)}°`
+    lineE.insertAdjacentElement("afterend", angulo);
+  }
 
 btn.addEventListener('click', updateSlope);
+btn.addEventListener('click', updateAngle);
 // Optional: update live as values change
 dyEl.addEventListener('input', updateSlope);
 dxEl.addEventListener('input', updateSlope);
@@ -1125,73 +1145,4 @@ function drawGoalArea(side, {
     }
   }
 
-  // Mover Jugadores
-  let isMoving = "false";
-  let index_y = "";
- // mover los jugadores cuando se cambie su posicion en la tabla
-for (let i=0; i<players.length; i+=2){
-    players[i].addEventListener("click",function(){
-      prevCoor_x = players[i].value;
-      let j = i + 1;
-      prevCoor_y = players[j].value;
-      
-      players[j].addEventListener("change",function(){
-        obj_x = players[i].value;
-        obj_y = players[j].value;
-        tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
-        index_y = j;
-        //revisar que el valor inicial no era zero
-        if (prevCoor_y !== "" && !isNaN(prevCoor_x)){
-          // dibujar nuevo circulo
-          moverJugador();
-        }
-      })
-    })
-}
-
-  function moverJugador(){
-    
-    let delta_x = Number(obj_x) - Number(prevCoor_x);
-    let delta_y = Number(obj_y) - Number(prevCoor_y);
-    delta_x = Math.abs(delta_x);
-    delta_y = Math.abs(delta_y);
-    // borrar la pelota
-        ctx.beginPath();
-          ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
-          ctx.fillStyle = 'white';
-          ctx.fill();
-          ctx.strokeStyle = 'white';
-          ctx.stroke();
-
-        let step_x = Number(delta_x/10);
-        let step_y = Number(delta_y/10);
-        prevCoor_x = Number(prevCoor_x) + Number(step_x);
-        prevCoor_y = Number(prevCoor_y) + Number(step_y);
-        //console.log("se esta acercando "+isMoving+"delta_x"+step_x+" delta_y "+step_y);
-        tempCoor_y = canvas.height - prevCoor_y; //se resta de la altura del campo de juego
-        
-        //dibujar jugador local
-          ctx.beginPath();
-          ctx.arc(prevCoor_x,tempCoor_y,5,0,2*Math.PI);
-          ctx.strokeStyle = 'black';
-          ctx.stroke();
-          ctx.fillStyle = (index_y < players.length/2) ? colorLocal: colorVisitante;
-        
-          ctx.fill();
-          drawGoalArea('left');
-          drawGoalArea('right');
-          dibujarLocales();
-          dibujarVisitantes();
-          drawCenterLineAndCircle();
-          //dibujarBalon();
-        if(delta_x > 5 && delta_y > 5){
-          requestAnimationFrame(moverJugador);
-        }else{
-          ctx.arc(prevCoor_x,tempCoor_y,6,0,2*Math.PI);
-          ctx.fillStyle = 'white';
-          ctx.fill();
-          //ctx.strokeStyle = 'white';
-          //ctx.stroke();
-          
-        }
-  }
+  
