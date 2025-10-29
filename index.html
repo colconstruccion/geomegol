@@ -44,7 +44,9 @@
     <body>
         <header><h1 class="brand-title">Geomegol</h1>
             <h2 id="mensaje">Aprende Geometria jugando Geomegol</h2>
-            <section class="instructions-card" aria-labelledby="instrucciones-title">
+             <!-- Toggle button -->
+            <button id="toggleInstructionsBtn" class="aux-btn">Mostrar Instrucciones</button>
+            <section class="instructions-card is-hidden" aria-labelledby="instrucciones-title">
             <h3 id="instrucciones-title">Instrucciones</h3>
             <p>Coloca las coordenadas (X,Y) para los jugadores locales y Usa ΔX y ΔY para mover el balon.</p>
             <ol class="instructions-list">
@@ -166,7 +168,7 @@
             <div class="footer-col">
                     <ul>
                     <li><a href="#">Liga Amateur</a></li>
-                    <li><a href="#">Liga Segunda División</a></li>
+                    <li><a href="./segunda/index2da.html">Liga Segunda División</a></li>
                     <li><a href="#">Liga Primera División</a></li>
                     </ul>
                 </div>
@@ -231,5 +233,16 @@
 
     // change every 10 seconds (10000 ms)
     setInterval(changeImage, 10000);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('toggleInstructionsBtn');
+            const card = document.querySelector('.instructions-card');
+
+            btn.addEventListener('click', () => {
+            const hidden = card.classList.toggle('is-hidden');
+            btn.textContent = hidden ? 'Mostrar Instrucciones' : 'Ocultar Instrucciones';
+            });
+        });
     </script>
 </html>

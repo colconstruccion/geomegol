@@ -626,6 +626,7 @@ function updateSlope() {
 
  // funcion para mostrar angulo
   let angulo;
+  const lineE =  document.getElementById('lineEquation');
   angulo = document.createElement('div');
   dxEl.addEventListener('change', updateAngle);
  
