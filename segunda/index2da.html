@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Geomegol</title>
+        <link rel="stylesheet" href="geomeStyles2.css">
+
+        <style>
+         /* style for the level */
+        #upLevel { display: none; }
+        /* style for the ads */ 
+        /* Float the futbolín image to the right of the tables */
+        .futbolin {
+        float: right;
+        width: 320px;              /* tweak to 280–360px if you like */
+        margin: 0 0 12px 16px;     /* space from tables on the left */
+        }
+
+        .futbolin img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 8px;        /* optional nicety */
+        }
+
+        /* Make it stack on phones/tablets */
+        @media (max-width: 800px) {
+        .futbolin {
+            float: none;
+            width: 100%;
+            max-width: 520px;        /* keep it reasonable */
+            margin: 12px auto;       /* center it */
+        }
+        }
+
+        /* Ensure the section after the float clears properly (prevents weird overlap) */
+        .players::after {
+        content: "";
+        display: block;
+        clear: both;
+        }
+        </style>
+    </head>
+
+    <body>
+        <header><h1 class="brand-title">Geomegol</h1>
+            <h2 id="mensaje">Aprende Geometria jugando Geomegol</h2>
+             <!-- Toggle button -->
+            <button id="toggleInstructionsBtn" class="aux-btn">Mostrar Instrucciones</button>
+            <section class="instructions-card is-hidden" aria-labelledby="instrucciones-title">
+            <h3 id="instrucciones-title">Instrucciones</h3>
+            <p>Coloca las coordenadas (X,Y) para los jugadores locales y Usa ΔX y ΔY para mover el balon.</p>
+            <ol class="instructions-list">
+                <li>El campo de juego se localiza en el primer cuadrante cartesiano</li>
+                <li>sus dimensiones son de 600 horizontal x 200 vertical</li>
+                <li>Ajusta <strong>ΔY</strong> y <strong>ΔX</strong> y presiona <em>Mover Balón</em>.</li>
+                <li>La <strong>pendiente (m)</strong> se muestra en la barra superior en la ecuacion de la linea y = mx + b.</li>
+            </ol>
+            </section>
+
+            <nav class="topbar">
+                <div class="scoreboard-inline">
+                    <label for="scoreTeam1">Local</label>
+                    <input type="number" id="scoreTeam1" min="0" value="0" readonly="true">
+
+                    <label for="scoreTeam2">Visitante</label>
+                    <input type="number" id="scoreTeam2" min="0" value="0" readonly="true">
+
+                    <label for="ballSlope">Pendiente (m)</label>
+                    <output id="ballSlope">—</output>
+
+                    <label for="lineEquation">Ecuacion de la linea</label>
+                    <output id="lineEquation">—</output>
+
+                    <button id="upLevel">Siguiente Nivel</button>
+
+                    <label>Color Local</label><input type="color" id="localColor" name="localColor" value="#ff0000">
+                    <label>color Visita</label><input type="color" id="visitaColor" name="visitaColor" value="#008000">
+
+
+                </div>
+            </nav>
+
+        </header>
+
+        <main>
+            <div class="court">
+                <section class="main">
+                    <canvas id="myCanvas" width="600" height="200"></canvas>
+                </section>
+                <label>Posicion del balon en x</label>
+                <input type="number" id="ball-x">
+                <label>Posicion del balon en y</label>
+                <input type="number" id="ball-y">
+                <label>Cuanto se mueve en Y</label>
+                <input id="deltaY" type="number" value="1">
+                <label>Cuanto se mueve en X</label>
+                <input id="deltaX" type="number" value="1">
+
+                <button id="moverBtn">Mover Balon</button>
+            </div>
+
+            <div class="players">
+              <!-- LOCAL TEAM -->
+              <div class="team">
+                  <h3>Local</h3>
+
+                  <div class="team-inner">
+                      <!-- Player number column -->
+                      <div class="player-num-col">
+                          <input type="number" value="1">
+                          <input type="number" value="2">
+                          <input type="number" value="3">
+                          <input type="number" value="4">
+                          <input type="number" value="5">
+                          <input type="number" value="6">
+                          <input type="number" value="7">
+                          <input type="number" value="8">
+                          <input type="number" value="9">
+                          <input type="number" value="10">
+                          <input type="number" value="11">
+                      </div>
+
+                      <!-- X / Y coords grid -->
+                      <div class="input-grid">
+                          <input type="number" placeholder="X1">
+                          <input type="number" placeholder="Y1">
+
+                          <input type="number" placeholder="X2">
+                          <input type="number" placeholder="Y2">
+
+                          <input type="number" placeholder="X3">
+                          <input type="number" placeholder="Y3">
+
+                          <input type="number" placeholder="X4">
+                          <input type="number" placeholder="Y4">
+
+                          <input type="number" placeholder="X5">
+                          <input type="number" placeholder="Y5">
+
+                          <input type="number" placeholder="X6">
+                          <input type="number" placeholder="Y6">
+
+                          <input type="number" placeholder="X7">
+                          <input type="number" placeholder="Y7">
+
+                          <input type="number" placeholder="X8">
+                          <input type="number" placeholder="Y8">
+
+                          <input type="number" placeholder="X9">
+                          <input type="number" placeholder="Y9">
+
+                          <input type="number" placeholder="X10">
+                          <input type="number" placeholder="Y10">
+
+                          <input type="number" placeholder="X11">
+                          <input type="number" placeholder="Y11">
+                      </div>
+                  </div>
+              </div>
+
+              <!-- VISITANTE TEAM -->
+              <div class="team">
+                  <h3>Visitante</h3>
+
+                  <div class="team-inner">
+                      <!-- Player number column -->
+                      <div class="player-num-col">
+                          <input type="number" value="1">
+                          <input type="number" value="2">
+                          <input type="number" value="3">
+                          <input type="number" value="4">
+                          <input type="number" value="5">
+                          <input type="number" value="6">
+                          <input type="number" value="7">
+                          <input type="number" value="8">
+                          <input type="number" value="9">
+                          <input type="number" value="10">
+                          <input type="number" value="11">
+                      </div>
+
+                      <!-- X / Y coords grid -->
+                      <div class="input-grid">
+                          <input type="number" placeholder="X1">
+                          <input type="number" placeholder="Y1">
+
+                          <input type="number" placeholder="X2">
+                          <input type="number" placeholder="Y2">
+
+                          <input type="number" placeholder="X3">
+                          <input type="number" placeholder="Y3">
+
+                          <input type="number" placeholder="X4">
+                          <input type="number" placeholder="Y4">
+
+                          <input type="number" placeholder="X5">
+                          <input type="number" placeholder="Y5">
+
+                          <input type="number" placeholder="X6">
+                          <input type="number" placeholder="Y6">
+
+                          <input type="number" placeholder="X7">
+                          <input type="number" placeholder="Y7">
+
+                          <input type="number" placeholder="X8">
+                          <input type="number" placeholder="Y8">
+
+                          <input type="number" placeholder="X9">
+                          <input type="number" placeholder="Y9">
+
+                          <input type="number" placeholder="X10">
+                          <input type="number" placeholder="Y10">
+
+                          <input type="number" placeholder="X11">
+                          <input type="number" placeholder="Y11">
+                      </div>
+                  </div>
+              </div>
+            </div>
+
+            
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-col">
+                <p>&copy; Geomegol. All rights reserved.</p>
+            </div>
+
+            <div class="footer-col">
+                    <ul>
+                    <li><a href="https://geomegol.web.app/">Liga Amateur</a></li>
+                    <li><a href="#">Liga Segunda División</a></li>
+                    <li><a href="#">Liga Primera División</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <ul>
+                    <li><a href="https://www.amazon.com/dp/B09R3H8FP7" target="_blank">Libro Geomegol</a></li>
+                    <li><a href="https://www.etsy.com/listing/4329439153/wooden-board-soccer-magnetic-game-with" target="_blank">Futbolines</a></li>
+                    <li><a href="#" id="resetLevelsLink">Resetear juego</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col futbolin-footer">
+                    <figure class="futbolin">
+                    <a href="https://www.etsy.com/listing/4329439153/wooden-board-soccer-magnetic-game-with"
+                        target="_blank" rel="noopener">
+                        <img id="futbolinImage" src="../images/futbolin_01.jpg" alt="Tablero de fútbol magnético">
+                    </a>
+                    <figcaption>Futbolín — jugadores magnéticos</figcaption>
+                    </figure>
+                </div>
+        </footer>
+
+    </body>
+    <script src="equipos.js"></script>
+    <script src="resetear.js"></script>
+    <!-- <script src="niveles.js"></script> --><!-- V46 -->
+    <script src="cancha.js"></script><!-- V49-->
+    <script id="gameVersion" src="geomegol_v51.js"></script>
+    <script src="saquedeBanda.js"></script> <!-- V30-->
+    <script src="saquedeMeta.js"></script> <!-- V31 -->
+    <script src="tirosLibres.js"></script> <!-- V46-->
+    <script src="frases.js"></script>
+    <script src="show.js"></script>
+
+    <!-- script for ads-->
+     <script>
+    // === CONFIG ===
+    const totalImages = 8; // <-- change to however many images you have
+    const folder = "../images/";
+    const prefix = "futbolin_";
+    const ext = ".jpg";
+
+    // pick a random starting image between 1 and totalImages
+    let current = Math.floor(Math.random() * totalImages) + 1;
+
+    const imgEl = document.getElementById("futbolinImage");
+
+    // show the random starting image immediately
+    function showImage(index) {
+        const num = String(index).padStart(2, "0");
+        imgEl.src = `${folder}${prefix}${num}${ext}`;
+    }
+    showImage(current);
+
+    // function to cycle to next image
+    function changeImage() {
+        current++;
+        if (current > totalImages) current = 1; // loop back
+        showImage(current);
+    }
+
+    // change every 10 seconds (10000 ms)
+    setInterval(changeImage, 10000);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('toggleInstructionsBtn');
+            const card = document.querySelector('.instructions-card');
+
+            btn.addEventListener('click', () => {
+            const hidden = card.classList.toggle('is-hidden');
+            btn.textContent = hidden ? 'Mostrar Instrucciones' : 'Ocultar Instrucciones';
+            });
+        });
+    </script>
+</html>

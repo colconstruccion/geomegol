@@ -1,0 +1,562 @@
+/* Required first line per your request */
+#myCanvas {
+  border: 1px solid black;
+}
+
+/* Keep sizing predictable */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Theme tokens */
+/*:root {
+  --bg-grad-a: #a8e6cf;
+  --bg-grad-b: #dcedc1;
+  --card-bg: #ffffffcc;
+  --ink: #2d3436;
+  --muted: #475569;    /* slate-600 */
+ /* --inp-border: #81ecec;
+  --inp-focus: #ff7675;
+  --inp-focus-bg: #ffeaa7;
+  --shadow-1: 0 4px 8px rgba(0,0,0,0.15);
+  --shadow-2: 0 2px 6px rgba(0,0,0,0.10);
+  --radius-card: 12px;
+  --radius-inp: 6px;
+  --font: 'Comic Sans MS', Arial, "Times New Roman";
+
+  --heading-font: system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+  --ink-heading: #0f172a;   /* deep slate */
+ /* --accent: #5aa9e6;        /* soft blue */
+ /* --accent2: #b3e5fc;      /* lighter blue */
+/*}*/
+
+:root {
+  --bg-grad-a: #a8e6cf;
+  --bg-grad-b: #1e293b;
+  --card-bg: #1e293bcc;
+  --ink: #f1f5f9;
+  --inp-border: #334155;
+  --inp-focus: #38bdf8;
+  --inp-focus-bg: #0f172a;
+  --shadow-1: 0 4px 8px rgba(0,0,0,0.3);
+  --shadow-2: 0 2px 6px rgba(0,0,0,0.25);
+  --radius-card: 12px;
+  --radius-inp: 6px;
+  --font: 'Comic Sans MS', Arial, "Times New Roman";
+  --heading-font: system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+  --ink-heading: #f1f5f9;
+  --accent: #38bdf8;
+  --accent2: #0ea5e9;
+}
+
+
+/* Layout: canvas left, players right */
+main {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  font-family: var(--font);
+}
+
+/* ===== Top bar scoreboard & slope ===== */
+.topbar {
+  background: linear-gradient(135deg, var(--bg-grad-a), var(--bg-grad-b));
+  box-shadow: var(--shadow-1);
+  padding: 8px 12px;
+}
+
+.scoreboard-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.scoreboard-inline label {
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.scoreboard-inline input[type="number"] {
+  width: 60px;
+  padding: 3px;
+  font-size: 0.9rem;
+  text-align: center;
+  border: 2px solid var(--inp-border);
+  border-radius: var(--radius-inp);
+  background: #fff;
+  transition: 0.25s;
+  box-shadow: var(--shadow-2);
+}
+
+.scoreboard-inline input[type="number"]:focus {
+  outline: none;
+  border-color: var(--inp-focus);
+  background: var(--inp-focus-bg);
+}
+
+.scoreboard-inline input[type="number"]:hover {
+  transform: scale(1.05);
+}
+
+/* Slope pill */
+#ballSlope {
+  min-width: 60px;
+  display: inline-block;
+  text-align: center;
+  padding: 4px 8px;
+  border: 2px solid var(--inp-border);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--shadow-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Also style the line equation output to match */
+#lineEquation {
+  min-width: 80px;
+  display: inline-block;
+  text-align: center;
+  padding: 4px 8px;
+  border: 2px solid var(--inp-border);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--shadow-2);
+  font-size: 0.8rem;
+  font-family: monospace;
+  /*color: var(--ink);*/
+  color: #0f172a; /* deep navy / dark slate */
+
+}
+
+/* ===== Court (canvas + movement controls) ===== */
+/* We use CSS Grid here so labels/inputs align nicely and button spans full width */
+.court {
+  display: grid;
+  grid-template-columns: auto 60px auto 60px; /* label | input | label | input */
+  gap: 8px 12px;                              /* row/column spacing */
+  align-items: center;
+}
+
+.court > section.main {
+  grid-column: 1 / -1; /* canvas takes full row */
+}
+
+.court label {
+  font-size: 0.9rem;
+  color: #0f172a; /* force dark slate text */
+  white-space: nowrap;
+}
+
+/*
+.court label {
+  font-size: 0.9rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+  */
+
+.court input[type="number"] {
+  width: 60px;
+  padding: 3px;
+  font-size: 0.9rem;
+  text-align: center;
+  border: 2px solid var(--inp-border);
+  border-radius: var(--radius-inp);
+  background: #fff;
+  transition: 0.25s;
+  box-shadow: var(--shadow-2);
+  margin-right: 10px;
+}
+
+.court input[type="number"]:focus {
+  outline: none;
+  border-color: var(--inp-focus);
+  background: #fff;
+  /*background: var(--inp-focus-bg); */
+}
+
+.court input[type="number"]:hover {
+  transform: scale(1.05);
+}
+
+#ball-x,
+#ball-y,
+#deltaY,
+#deltaX {
+  width: 60px; /* keep consistent sizing */
+}
+
+/* Move Ball button spans the whole row at the bottom */
+#moverBtn {
+  grid-column: 1 / -1;
+  justify-self: start; /* left align */
+  padding: 6px 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+#moverBtn:hover {
+  transform: translateY(-1px);
+}
+
+#moverBtn:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+/* ===== Players (RIGHT SIDE) ===== */
+/* outer wrapper that holds BOTH teams */
+.players {
+  display: flex;
+  gap: 20px; /* space between Local and Visitante cards */
+  background: linear-gradient(135deg, var(--bg-grad-a), var(--bg-grad-b));
+  padding: 16px 20px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-1);
+}
+
+/* each team "card" */
+.players .team {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: var(--shadow-2);
+  width: 180px;          /* wider to allow new number column + coords */
+  min-width: 180px;
+}
+
+/* team title */
+.players .team h3 {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* inner layout: left column = player numbers, right = X/Y coords */
+.team-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* left column with player numbers 1..11 */
+.player-num-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.player-num-col input[type="number"] {
+  width: 38px;
+  padding: 3px;
+  font-size: 0.8rem;
+  text-align: center;
+  border: 2px solid var(--inp-border);
+  border-radius: var(--radius-inp);
+  background: #fff;
+  box-shadow: var(--shadow-2);
+  transition: 0.25s;
+}
+
+.player-num-col input[type="number"]:focus {
+  outline: none;
+  border-color: var(--inp-focus);
+  background: #fff;
+  /* background: var(--inp-focus-bg); */
+}
+
+.player-num-col input[type="number"]:hover {
+  transform: scale(1.05);
+}
+
+/* right block: 2-column grid for X / Y */
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* X | Y */
+  gap: 4px;
+}
+
+/* individual X/Y inputs */
+.input-grid input[type="number"] {
+  width: 55px; /* slightly wider than before */
+  padding: 3px;
+  font-size: 0.8rem;
+  text-align: center;
+  border: 2px solid var(--inp-border);
+  border-radius: var(--radius-inp);
+  background: #fff;
+  transition: 0.25s;
+  box-shadow: var(--shadow-2);
+}
+
+.input-grid input[type="number"]:focus {
+  outline: none;
+  border-color: var(--inp-focus);
+  /*background: var(--inp-focus-bg);*/
+  background: #fff;
+}
+
+.input-grid input[type="number"]:hover {
+  transform: scale(1.05);
+}
+
+/* hide stuff */
+.is-hidden {
+  display: none !important;
+}
+
+/* ===== Instructions card ===== */
+.instructions-card {
+  max-width: 960px;
+  margin: 12px auto 18px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  border: 1px solid #e6eef7;
+  border-left: 4px solid #5aa9e6;     /* subtle accent */
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  font-family: var(--heading-font);
+  color: #1f2937;                      /* slate-800 */
+  line-height: 1.55;
+}
+
+.instructions-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: #0f172a;                      /* slate-900 */
+}
+
+.instructions-card p {
+  margin: 0 0 8px 0;
+  font-size: 0.96rem;
+  color: #374151;                      /* slate-700 */
+}
+
+.instructions-list {
+  margin: 8px 0 0 1.1em;               /* neat indent for numbers */
+  padding: 0;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.instructions-list li {
+  margin: 6px 0;
+}
+
+/* ===== Titles, headers, accents ===== */
+.brand-title {
+  color: #16a34a;
+}
+
+h1 {
+  font-family: var(--heading-font);
+  color: var(--ink-heading);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  line-height: 1.15;
+  font-size: clamp(1.8rem, 2vw + 1rem, 2.6rem);
+  margin: 8px 0 4px;
+  position: relative;
+}
+
+/* subtle accent bar under the main title */
+h1::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 3px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  opacity: 0.9;
+}
+
+/* Secondary heading (#mensaje) with soft card-like background */
+#mensaje {
+  font-family: var(--heading-font);
+  color: var(--muted);
+  font-weight: 600;
+  line-height: 1.35;
+  font-size: clamp(1.05rem, 1.2vw + 0.7rem, 1.45rem);
+  margin: 6px 0 12px;
+
+  background: linear-gradient(180deg, #ffffff, #f7fbff);
+  border: 1px solid #e6eef7;
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: inline-block;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* button style for "Mostrar/Ocultar Instrucciones" etc */
+.aux-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #caffbf, #a0e7e5);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  font-family: var(--heading-font);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.aux-btn:hover {
+  transform: translateY(-1px);
+}
+
+.aux-btn:active {
+  filter: brightness(0.95);
+}
+
+/* ===== Footer ===== */
+.site-footer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg-grad-a), var(--bg-grad-b));
+  padding: 30px 40px;
+  height: 200px;
+  border-top: 2px solid var(--accent);
+  box-shadow: var(--shadow-1);
+  font-family: var(--heading-font);
+  color: var(--ink-heading);
+}
+
+.site-footer .footer-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.site-footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.site-footer ul li {
+  margin: 4px 0;
+}
+
+.site-footer a {
+  text-decoration: none;
+  color: var(--ink-heading);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.site-footer a:hover {
+  color: var(--accent);
+}
+
+/* ==== Futbolín image in footer ==== */
+.futbolin-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.futbolin-footer figure.futbolin {
+  float: none;
+  margin: 0;
+  text-align: center;
+}
+
+.futbolin-footer figure.futbolin img {
+  width: 140px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: var(--shadow-2);
+}
+
+.futbolin-footer figcaption {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ===== Responsive niceties ===== */
+@media (max-width: 900px) {
+  main {
+    flex-direction: column;      /* stack vertically */
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .court {
+    order: 1;
+  }
+
+  .players {
+    order: 2;
+    width: 100%;
+    margin-top: 4px;
+    justify-content: center;
+    flex-wrap: wrap;             /* let Local / Visitante wrap if narrow */
+  }
+
+  .players .team {
+    width: 200px;
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 800px) {
+  .site-footer {
+    grid-template-columns: 1fr 1fr;
+    height: auto;
+    padding: 24px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  h1::after {
+    width: 56px;
+  }
+
+  #mensaje {
+    display: block;
+  }
+
+  .instructions-card {
+    margin: 10px 12px 16px;
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .site-footer {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .site-footer .footer-col {
+    align-items: center;
+  }
+}
+
